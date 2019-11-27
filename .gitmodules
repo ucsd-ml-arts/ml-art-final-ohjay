@@ -1,0 +1,3 @@
+[submodule "LEGOGAN"]
+	path = LEGOGAN
+	url = https://github.com/ohjay/LEGOGAN.git
