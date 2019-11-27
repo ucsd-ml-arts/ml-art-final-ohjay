@@ -1,10 +1,43 @@
-# Inexorable
+# Final Project
 
 Owen Jow, owen@eng.ucsd.edu
 
 ## Abstract Proposal
 
-FIRST STEP: Write up a description (in the form of an abstract) of what you will revisit for your final project. This should be one paragraph clearly describing your concept and approach. What are your desired creative goals? How are you expanding on something we covered in the class? How will you present your work next Wednesday in the final project presentations? 
+FIRST STEP: Write up a description (in the form of an abstract) of what you will revisit for your final project. This should be one paragraph clearly describing your concept and approach. What are your desired creative goals? How are you expanding on something we covered in the class? How will you present your work next Wednesday in the final project presentations?
+
+## TODO
+
+### Implementation
+
+- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess." The objects will be voxel objects, like LEGOs.
+- Loosen interactivity constraint; add functionality to automatically write out images and compose them into a video animation.
+- Train a GAN to generate LEGOs (as voxel objects) based on a distribution of `obj` models. See e.g. http://3dgan.csail.mit.edu.
+- Animate the construction of the LEGOs.
+- Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
+- Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
+
+### Conceptual Ideas
+
+- To get started, the user can click a button to add things to the scene, not realizing at that point that it's only going to get more and more cluttered; nothing will ever really go away; it will be difficult to really clean things up.
+- Symbolism:
+  - **information clutter**
+  - entropy, the unceasing arrow of time
+  - kipple from _Do Androids Dream of Electric Sheep?_
+  - the internet, and how it's growing exponentially more cluttered and noisy as the number of people with access rises
+  - how our lives are noisier now that we have electronic and network-based interference at all hours of the day
+  - how ideas are everywhere, but it's hard to find the good ones
+  - all the creators are trying to create, and we get more and more mess, more and more _things_; and ML is a creator too, one of many, and all of them are adding things at once; that's almost how it feels – or one creator makes something, and the others jump on the back of that
+  - the LEGOs are supposed to represent something clearly artificial, something obviously man-made, connoting construction and man-made manufacture
+- The style transfer represents how we make things and dress them up and call them beautiful, sometimes missing the content for the form (the aqua for the unda).
+  - fulfills unda/aqua metaphor; style represents form, content represents essence; style can mask out the essence
+  - maybe looks like a regular style transfer but there's something hidden in each image; as time goes on I make it so that the hidden thing is more and more evident by removing the style surrounding it (represents "getting down to the essence")
+  - comment on postmodern aesthetic movement e.g. in Fowles's time and the time of "In Pursuit of Beauty"
+- Cycles back from the cacophony and jumble of random things to a clean palette, a white slate. There are flashes of this, like memories, but the development is inevitable, inexorable, it must go on. Might depict how technology can get out of hand, and starts with a single push.
+- Maybe having the program crash (can be "fake") is part of the app and the artistic vision. Alternatively, I can just say I considered this, but ultimately decided it would be too extreme.
+- Issue: must appease creativity metric. Maybe ML decides how to add things to the scene, or creates the objects to add to the scene. This could be based on what it thinks would look good in the current version of the scene, according to typical scene composition – it could predict both the object and the position/orientation/scale of the object. (Solution: yes, at the very least, ML should be creating the objects to add to the scene.)
+- Start with a natural-looking scene (even photorealistic, with later layers being composited in?), but then the LEGOs start to pile up.
+- Only a few exceptions shine through, timeless, higher and taller than most.
 
 ## Project Report
 
