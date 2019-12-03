@@ -10,10 +10,13 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 
 ### Implementation
 
-- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess." The objects will be voxel objects, like LEGOs.
+- Generate voxel objects using [this pretrained thing](https://github.com/zck119/3dgan-release). Stack them to create amalgamations of voxel objects (adds layer of ML "creativity"; chair + chair = chair? chair + desk = ?). Animate the construction, building everything layer-by-layer, from the ground up. Precompute the building sequence, although allow the users to add blocks in real-time and delete blocks in real-time. Can also do stylization in real-time as before.
+- No need to generate LEGOs in particular. Too much time/work, doesn't add much w.r.t. artistic vision.
+
+- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess."
 - Loosen interactivity constraint; add functionality to automatically write out images and compose them into a video animation.
-- Train a GAN to generate LEGOs (as voxel objects) based on a distribution of `obj` models. See e.g. http://3dgan.csail.mit.edu.
-- Animate the construction of the LEGOs.
+- The objects will be voxel objects. Use a GAN to generate voxel objects based on a distribution of `obj` models. See e.g. http://3dgan.csail.mit.edu.
+- Animate the construction of the voxel objects.
 - Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
 - Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
 
