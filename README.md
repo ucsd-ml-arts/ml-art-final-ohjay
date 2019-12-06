@@ -18,6 +18,8 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 - Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
 - Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
 - Could add appropriate audio as well.
+- Orbit/look/walk around scene and when you come back, there's a bunch more stuff than there was before.
+- Try to stack the voxel objects like Tetris. Find a surface where there is an open space and where the current object can fit (or just stack them up however each individual layer of block falls).
 
 ### Conceptual Ideas
 
