@@ -1,0 +1,3 @@
+[submodule "3dgan-release"]
+	path = 3dgan-release
+	url = https://github.com/in-pursuit-of-beauty/3dgan-release.git
