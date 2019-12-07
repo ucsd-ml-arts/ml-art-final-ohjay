@@ -99,7 +99,7 @@ Your code for generating your project:
 
 ```
 git submodule update --init --recursive
-cd geometry-processing-parameterization
+cd mesh-parameterization
 mkdir build
 cd build
 cmake ..
@@ -130,7 +130,7 @@ python3 utils/vox2mesh.py <postprocessed mat path>
 
 Assign texture coordinates based on a mesh parameterization.
 ```
-cd geometry-processing-parameterization/build
+cd mesh-parameterization/build
 ./mesh-parameterization <obj path>
 ```
 
