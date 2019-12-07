@@ -6,6 +6,18 @@ Owen Jow, owen@eng.ucsd.edu
 
 FIRST STEP: Write up a description (in the form of an abstract) of what you will revisit for your final project. This should be one paragraph clearly describing your concept and approach. What are your desired creative goals? How are you expanding on something we covered in the class? How will you present your work next Wednesday in the final project presentations?
 
+## Project Components
+
+### ML-Based
+- **[1] Voxel object generation.** I use the pre-trained [3D-GAN](https://github.com/zck119/3dgan-release) (Wu, Zhang et al.) to generate voxel objects.
+- **[3] Mesh stylization.** I "stylize" the meshes by generating a texture ([1](https://github.com/akanimax/BMSG-GAN), [2](https://wxs.ca/research/multiscale-neural-synthesis)) to apply to each.
+- **[4] Scene layout design.** I use ML to determine the placement of objects in the scene.
+
+### Non-ML-Based
+- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes.
+- **[5] Real-time scene construction.** I build up the scene using the stylized/generated objects in an animated fashion.
+- **[6] Offline scene construction.** I also provide an option to write out the scene construction as a video.
+
 ## TODO
 
 ### Implementation
@@ -40,6 +52,10 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 - Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
 
 Inexorable: The World a House of One
+
+- Why voxels? Helps with layout generation. Can make into grid.
+
+- Generate textures: unconditional image generation (with a GAN?). Use [this](https://github.com/akanimax/BMSG-GAN). StyleGAN might take too long to train. Can also do texture synthesis on top of this, or separate from this (to generate an additional set of textures to use). Multiple texture generation methods.
 
 ### Conceptual Ideas
 
@@ -94,6 +110,19 @@ Documentation of your results in an appropriate format, both links to files and 
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
 - Does it run on some other (non-datahub) platform? (CoLab, etc.)
+
+## Other Potential Directions
+
+- Directly generate polygon meshes, e.g. based on [this paper](http://www.nobuyuki-umetani.com/publication/2017_siggatb_explore/2017_siggatb_ExploringGenerative3DShapes.pdf).
+  - _Why didn't I do this?_ I wanted voxels for the obvious artificiality and for convenience during layout generation.
+- Generate photorealistic materials, e.g. based on [this paper](https://keunhong.com/publications/photoshape/).
+  - _Why didn't I do this?_ I wanted the objects to have a stylized quality to them, as opposed to being realistic.
+- Generate higher-resolution voxel objects, e.g. based on [this project](https://github.com/EdwardSmith1884/Multi-View-Silhouette-and-Depth-Decomposition-for-High-Resolution-3D-Object-Representation).
+  - _Why didn't I do this?_ Not enough time.
+- Generate voxel objects from sketches, e.g. based on [this project](https://github.com/maxorange/pix2vox).
+  - _Why didn't I do this?_ Too much unnecessary overhead; doesn't really add to final product if non-interactive.
+- Train the object generator on my own dataset.
+  - _Why didn't I do this?_ Not enough time.
 
 ## References
 
