@@ -131,7 +131,7 @@ python3 utils/vox2mesh.py <postprocessed mat path>
 Assign texture coordinates based on a mesh parameterization.
 ```
 cd geometry-processing-parameterization/build
-./parameterization <obj path>
+./mesh-parameterization <obj path>
 ```
 
 ### [3] Mesh stylization
