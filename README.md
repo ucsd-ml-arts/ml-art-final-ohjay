@@ -135,6 +135,8 @@ Documentation of your results in an appropriate format, both links to files and 
 
 ## Technical Notes
 
+To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip).
+
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
 - Does it run on some other (non-datahub) platform? (CoLab, etc.)
@@ -154,7 +156,15 @@ Any implementation details or notes we need to repeat your work.
 
 ## References
 
-References to any papers, techniques, repositories you used:
 - Papers
+  - [Learning a Probabilistic Latent Space of Object Shapes via 3D Generative-Adversarial Modeling](http://3dgan.csail.mit.edu)
+  - [MSG-GAN: Multi-Scale Gradients for Generative Adversarial Networks](https://arxiv.org/pdf/1903.06048.pdf)
+  - [High-Resolution Multi-Scale Neural Texture Synthesis](https://wxs.ca/research/multiscale-neural-synthesis)
 - Repositories
-- Blog posts
+  - [`3dgan-release`](https://github.com/zck119/3dgan-release)
+  - [`BMSG-GAN`](https://github.com/akanimax/BMSG-GAN)
+  - [`subjective-functions`](https://github.com/wxs/subjective-functions)
+- Other
+  - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
+  - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
+  - [`scikit` marching cubes](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
