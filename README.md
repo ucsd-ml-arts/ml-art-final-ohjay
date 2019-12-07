@@ -20,6 +20,26 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 - Could add appropriate audio as well.
 - Orbit/look/walk around scene and when you come back, there's a bunch more stuff than there was before.
 - Try to stack the voxel objects like Tetris. Find a surface where there is an open space and where the current object can fit (or just stack them up however each individual layer of block falls).
+- Start with nature scene with pandas roaming around. Add man-made objects. If you can do it in real-time, great. Maybe just precompute a sequence, and then can run it on the laptop, with a button to add pre-made ML objects to scene. But it has to look good; that's the point. It needs to have a nice aesthetic quality to it. Also, it needs to fulfill different aspects of the creativity metric.
+
+- generate scene
+- decide placement of objects based on 3d reconstructions of real scenes
+  - Input: a floor plan (a 2D top-down floor plan)
+  - Output: a floor plan with the new object (top-down space determined as voxels)
+  - Because I have voxels; I can easily convert them into a 2D top-down voxel grid
+  - and afterward I can also convert them to obj files to reduce number of meshes
+
+- can determine material of objects at same time, based on color of the pixels in the floor plan?
+
+- The world is a 1000x1000x1000 voxel grid. Can be filled. Cannot leave the area.
+
+- A world of layers
+- Discretize into squares of the size of the object, so that you know you won't overlap if possible
+- RGBA image (current floor plan) -> RGBA image (new floor plan). Can train with RGBD images? (convert depth to inverse depth probability in [0, 1]; 1 is closer) [want the top-down to be like looking at an image; a beautiful image.] RGB represents desired color of object. A represents probability that we put the new object there. 1 is higher probability. Use A channel to sample where we put the next object.
+- If entire floor plan is taken, use floor plan for next layer up. I guess objects will hang in the air in Panda3D, which is good.
+- Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
+
+Inexorable: The World a House of One
 
 ### Conceptual Ideas
 
