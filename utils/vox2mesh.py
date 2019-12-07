@@ -25,13 +25,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.vox_filepath.endswith('.mat'):
-        vox = sio.loadmat(args.vox_filepath)['voxels']
-        # take first shape
-        volume = vox[0, 0]
-        # binarize
-        volume[volume > 0.5] = 1
-        volume[volume < 1] = 0
-        # take largest connected component... TODO
+        volume = sio.loadmat(args.vox_filepath)['voxels']
         vox2mesh(volume)
     else:
         dot_idx = args.vox_filepath.rfind('.')

@@ -95,6 +95,34 @@ Your code for generating your project:
 - Python: generative_code.py
 - Jupyter notebooks: generative_code.ipynb
 
+## Usage
+
+### [1] Voxel object generation
+
+```
+cd 3dgan-release
+th main.lua -gpu 1 -class all -bs 50 -sample -ss 150
+```
+
+### [2] Voxel/mesh conversion
+
+Postprocess the mesh (binarize and keep only the largest connected component).
+```
+cd 3dgan-release/visualization/python
+python postprocess.py <mat path> -t 0.1 -i 1 -mc 2
+```
+
+Perform the voxel-to-mesh conversion.
+```
+python3 utils/vox2mesh.py <postprocessed mat path>
+```
+
+### [3] Mesh stylization
+
+### [4] Scene layout design, [5] Real-time scene construction
+
+### [4] Scene layout design, [6] Offline scene construction
+
 ## Results
 
 Documentation of your results in an appropriate format, both links to files and a brief description of their contents:
@@ -121,7 +149,7 @@ Any implementation details or notes we need to repeat your work.
   - _Why didn't I do this?_ Not enough time.
 - Generate voxel objects from sketches, e.g. based on [this project](https://github.com/maxorange/pix2vox).
   - _Why didn't I do this?_ Too much unnecessary overhead; doesn't really add to final product if non-interactive.
-- Train the object generator on my own dataset.
+- Train the object generator on my own dataset, e.g. based on [this project](https://github.com/EdwardSmith1884/3D-IWGAN/tree/master/3D-Generation).
   - _Why didn't I do this?_ Not enough time.
 
 ## References
