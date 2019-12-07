@@ -1,3 +1,6 @@
 [submodule "3dgan-release"]
 	path = 3dgan-release
 	url = https://github.com/in-pursuit-of-beauty/3dgan-release.git
+[submodule "geometry-processing-parameterization"]
+	path = geometry-processing-parameterization
+	url = https://github.com/in-pursuit-of-beauty/geometry-processing-parameterization.git

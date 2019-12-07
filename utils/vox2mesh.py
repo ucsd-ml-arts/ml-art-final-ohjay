@@ -11,8 +11,21 @@ import scipy.io as sio
 from mayavi import mlab
 from skimage import measure
 
-def vox2mesh(volume):
+def write_obj(path, verts, faces, normals):
+    """Reference: https://stackoverflow.com/q/48844778."""
+    faces = faces + 1
+    with open(path, 'w') as f:
+        for vert in verts:
+            f.write('v {0} {1} {2}\n'.format(vert[0], vert[1], vert[2]))
+        for normal in normals:
+            f.write('vn {0} {1} {2}\n'.format(normal[0], normal[1], normal[2]))
+        for face in faces:
+            f.write('f {0}//{0} {1}//{1} {2}//{2}\n'.format(face[0], face[1], face[2]))
+    print('Wrote `%s`.' % path)
+
+def vox2mesh(volume, out_filepath):
     verts, faces, normals, values = measure.marching_cubes_lewiner(volume, 0.0)
+    write_obj(out_filepath, verts, faces, normals)
     mlab.triangular_mesh([vert[0] for vert in verts],
                          [vert[1] for vert in verts],
                          [vert[2] for vert in verts],
@@ -21,12 +34,13 @@ def vox2mesh(volume):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('vox_filepath', type=str)
+    parser.add_argument('voxel_filepath', type=str)
+    parser.add_argument('-o', '--out_filepath', type=str, default='out.obj')
     args = parser.parse_args()
 
-    if args.vox_filepath.endswith('.mat'):
-        volume = sio.loadmat(args.vox_filepath)['voxels']
-        vox2mesh(volume)
+    if args.voxel_filepath.endswith('.mat'):
+        volume = sio.loadmat(args.voxel_filepath)['voxels']
+        vox2mesh(volume, args.out_filepath)
     else:
-        dot_idx = args.vox_filepath.rfind('.')
-        print('Unsupported file extension: %s' % args.vox_filepath[dot_idx+1:])
+        dot_idx = args.voxel_filepath.rfind('.')
+        print('Unsupported file extension: %s' % args.voxel_filepath[dot_idx+1:])

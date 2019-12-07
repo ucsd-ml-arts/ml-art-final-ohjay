@@ -95,6 +95,17 @@ Your code for generating your project:
 - Python: generative_code.py
 - Jupyter notebooks: generative_code.ipynb
 
+## Setup
+
+```
+git submodule update --init --recursive
+cd geometry-processing-parameterization
+mkdir build
+cd build
+cmake ..
+make
+```
+
 ## Usage
 
 ### [1] Voxel object generation
@@ -112,9 +123,15 @@ cd 3dgan-release/visualization/python
 python postprocess.py <mat path> -t 0.1 -i 1 -mc 2
 ```
 
-Perform the voxel-to-mesh conversion.
+Perform the voxel-to-mesh conversion. The result will be written to an OBJ file.
 ```
 python3 utils/vox2mesh.py <postprocessed mat path>
+```
+
+Assign texture coordinates based on a mesh parameterization.
+```
+cd geometry-processing-parameterization/build
+./parameterization <obj path>
 ```
 
 ### [3] Mesh stylization
@@ -167,4 +184,4 @@ Any implementation details or notes we need to repeat your work.
 - Other
   - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
   - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
-  - [`scikit` marching cubes](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
+  - [`scikit` marching cubes documentation](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
