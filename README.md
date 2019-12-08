@@ -154,7 +154,7 @@ Documentation of your results in an appropriate format, both links to files and 
 
 ## Technical Notes
 
-To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip). For parameterization, you will need to install [CGAL](https://www.cgal.org/download/linux.html).
+To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip).
 
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
@@ -166,12 +166,14 @@ Any implementation details or notes we need to repeat your work.
   - _Why didn't I do this?_ I wanted voxels for the obvious artificiality and for convenience during layout generation.
 - Generate photorealistic materials, e.g. based on [this paper](https://keunhong.com/publications/photoshape/).
   - _Why didn't I do this?_ I wanted the objects to have a stylized quality to them, as opposed to being realistic.
-- Generate higher-resolution voxel objects, e.g. based on [this project](https://github.com/EdwardSmith1884/Multi-View-Silhouette-and-Depth-Decomposition-for-High-Resolution-3D-Object-Representation).
-  - _Why didn't I do this?_ Not enough time.
 - Generate voxel objects from sketches, e.g. based on [this project](https://github.com/maxorange/pix2vox).
   - _Why didn't I do this?_ Too much unnecessary overhead; doesn't really add to final product if non-interactive.
 - Train the object generator on my own dataset, e.g. based on [this project](https://github.com/EdwardSmith1884/3D-IWGAN/tree/master/3D-Generation).
   - _Why didn't I do this?_ Not enough time.
+- Generate higher-resolution voxel objects, e.g. based on [this project](https://github.com/EdwardSmith1884/Multi-View-Silhouette-and-Depth-Decomposition-for-High-Resolution-3D-Object-Representation).
+  - _Why didn't I do this?_ Not enough time.
+- More mesh cleanup, e.g. using [PyMesh](https://pymesh.readthedocs.io/en/latest/api_local_mesh_cleanup.html), CGAL, [`libigl`](https://github.com/libigl/libigl-examples/blob/master/skeleton-poser/clean.cpp), etc.
+  - _Why didn't I do this?_ Not enough time, and unnecessary.
 
 ## References
 
@@ -183,7 +185,11 @@ Any implementation details or notes we need to repeat your work.
   - [`3dgan-release`](https://github.com/zck119/3dgan-release)
   - [`BMSG-GAN`](https://github.com/akanimax/BMSG-GAN)
   - [`subjective-functions`](https://github.com/wxs/subjective-functions)
+  - [`libigl`](https://github.com/libigl/libigl)
+  - [`geometry-processing-parameterization`](https://github.com/alecjacobson/geometry-processing-parameterization)
+  - [`mesh-parameterization`](https://github.com/ohjay/mesh-parameterization) (this is my repository, but...)
 - Other
   - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
   - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
   - [`scikit` marching cubes documentation](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
+  - [`libigl` tutorial](https://libigl.github.io)
