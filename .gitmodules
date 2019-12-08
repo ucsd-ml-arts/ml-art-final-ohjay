@@ -4,3 +4,9 @@
 [submodule "mesh-parameterization"]
 	path = mesh-parameterization
 	url = https://github.com/in-pursuit-of-beauty/mesh-parameterization.git
+[submodule "openaccess"]
+	path = openaccess
+	url = https://github.com/in-pursuit-of-beauty/openaccess.git
+[submodule "The-Metropolitan-Museum-of-Art-Image-Downloader"]
+	path = The-Metropolitan-Museum-of-Art-Image-Downloader
+	url = https://github.com/in-pursuit-of-beauty/The-Metropolitan-Museum-of-Art-Image-Downloader.git

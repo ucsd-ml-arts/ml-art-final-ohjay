@@ -138,6 +138,14 @@ cd mesh-parameterization/build
 
 ### [3] Mesh stylization
 
+Download training data (public-domain Met art).
+```
+cd openaccess
+git lfs pull
+cd ../The-Metropolitan-Museum-of-Art-Image-Downloader
+python met_download.py --csv=../openaccess/MetObjects.csv --out=<data dir> --artist="Vincent van Gogh"
+```
+
 ### [4] Scene layout design, [5] Real-time scene construction
 
 ### [4] Scene layout design, [6] Offline scene construction
@@ -154,7 +162,7 @@ Documentation of your results in an appropriate format, both links to files and 
 
 ## Technical Notes
 
-To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip).
+To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip). To download the Met catalog, you will need [Git LFS](https://github.com/git-lfs/git-lfs/wiki/Installation).
 
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
@@ -188,8 +196,11 @@ Any implementation details or notes we need to repeat your work.
   - [`libigl`](https://github.com/libigl/libigl)
   - [`geometry-processing-parameterization`](https://github.com/alecjacobson/geometry-processing-parameterization)
   - [`mesh-parameterization`](https://github.com/ohjay/mesh-parameterization) (this is my repository, but...)
+  - [The Met Image Downloader](https://github.com/trevorfiez/The-Metropolitan-Museum-of-Art-Image-Downloader)
+  - [`metmuseum/openaccess`](https://github.com/metmuseum/openaccess)
 - Other
   - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
   - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
   - [`scikit` marching cubes documentation](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
   - [`libigl` tutorial](https://libigl.github.io)
+  - [The Met Collection](https://www.metmuseum.org/art/collection)
