@@ -122,7 +122,15 @@ th main.lua -gpu 1 -class all -bs 50 -sample -ss 150
 
 ### [2] Voxel/mesh conversion
 
-Postprocess the mesh (binarize and keep only the largest connected component).
+#### All
+
+```
+./utils/convert_all.sh 3dgan-release/output <mesh dir>
+```
+
+#### Individual
+
+Postprocess the voxel object (binarize and keep only the largest connected component).
 ```
 cd 3dgan-release/visualization/python
 python postprocess.py <mat path> -t 0.1 -i 1 -mc 2
