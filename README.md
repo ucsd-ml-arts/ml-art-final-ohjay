@@ -9,7 +9,7 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 ## Project Components
 
 ### ML-Based
-- **[1] Voxel object generation.** I use the pre-trained [3D-GAN](https://github.com/zck119/3dgan-release) (Wu, Zhang et al.) to generate voxel objects.
+- **[1] Voxel object generation.** I use [3D-GAN](https://github.com/zck119/3dgan-release) (Wu, Zhang et al.) to generate voxel objects.
 - **[3] Mesh stylization.** I "stylize" the meshes by generating a texture ([1](https://github.com/akanimax/BMSG-GAN), [2](https://wxs.ca/research/multiscale-neural-synthesis)) to apply to each.
 - **[4] Scene layout design.** I use ML to determine the placement of objects in the scene.
 
@@ -161,6 +161,12 @@ cd BMSG-GAN
 export SM_CHANNEL_TRAINING=<data dir>
 export SM_MODEL_DIR=models/exp_1
 python3 sourcecode/train.py --depth=6 --latent_size=512 --num_epochs=500 --batch_size=5 --d_lr=0.0003 --checkpoint_factor=10 --flip_augment=True --sample_dir=samples/exp_1 --model_dir=<models dir>/exp_1 --images_dir=<data dir>
+```
+
+Use the trained MSG-GAN to generate textures for meshes.
+```
+cd BMSG-GAN
+python3 sourcecode/generate_samples.py --generator_file=<models dir>/exp_1/<checkpoint> --latent_size=512 --depth=6 --num_samples=300 --out_dir=<texture dir>
 ```
 
 ### [4] Scene layout design, [5] Real-time scene construction
