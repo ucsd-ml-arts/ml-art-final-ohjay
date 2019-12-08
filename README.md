@@ -51,8 +51,6 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 - If entire floor plan is taken, use floor plan for next layer up. I guess objects will hang in the air in Panda3D, which is good.
 - Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
 
-Inexorable: The World a House of One
-
 - Why voxels? Helps with layout generation. Can make into grid.
 
 - triangle soup, degenerate meshes :(
@@ -93,9 +91,14 @@ Briefly describe the files that are included with your repository:
 
 ## Code
 
-Your code for generating your project:
-- Python: generative_code.py
-- Jupyter notebooks: generative_code.ipynb
+- `renderloop.py`: The main file. Launches the rendering loop.
+- `utils/vox2mesh.py`: Convert voxel grids to meshes and export as OBJs.
+- `utils/preprocess_art.py`: Code for preprocessing/augmenting the art dataset.
+- `3dgan-release/visualization/python/postprocess.py`: Postprocess voxel objects.
+- `BMSG-GAN/sourcecode/train.py`: Train the art texture generator.
+- `mesh-parameterization/src/main.cpp`: Add texture coordinates to OBJs.
+- `mesh-parameterization/src/parameterize_mesh.cpp`: Do mesh parameterization.
+- `The-Metropolitan-Museum-of-Art-Image-Downloader/met_download.py`: Download art data.
 
 ## Setup
 
