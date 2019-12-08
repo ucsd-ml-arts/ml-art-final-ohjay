@@ -144,6 +144,15 @@ cd openaccess
 git lfs pull
 cd ../The-Metropolitan-Museum-of-Art-Image-Downloader
 python met_download.py --csv=../openaccess/MetObjects.csv --out=<data dir> --artist="Vincent van Gogh"
+rm <data dir>/piece_info.csv
+```
+
+Train the MSG-GAN on the art data.
+```
+cd BMSG-GAN
+export SM_CHANNEL_TRAINING=<data dir>
+export SM_MODEL_DIR=models/exp_1
+python3 sourcecode/train.py --depth=6 --latent_size=512 --num_epochs=500 --flip_augment=True --sample_dir=samples/exp_1 --model_dir=models/exp_1 --images_dir=<data dir>
 ```
 
 ### [4] Scene layout design, [5] Real-time scene construction

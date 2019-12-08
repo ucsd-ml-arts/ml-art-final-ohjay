@@ -10,3 +10,6 @@
 [submodule "The-Metropolitan-Museum-of-Art-Image-Downloader"]
 	path = The-Metropolitan-Museum-of-Art-Image-Downloader
 	url = https://github.com/in-pursuit-of-beauty/The-Metropolitan-Museum-of-Art-Image-Downloader.git
+[submodule "BMSG-GAN"]
+	path = BMSG-GAN
+	url = https://github.com/in-pursuit-of-beauty/BMSG-GAN.git
