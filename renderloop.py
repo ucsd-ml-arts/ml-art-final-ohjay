@@ -97,6 +97,13 @@ class BeautyApp(ShowBase):
         self.scene.setScale(0.25, 0.25, 0.25)
         self.scene.setPos(-8, 42, 0)
 
+        # Add model.
+        self.sofa = self.loader.loadModel('out_tc.obj')
+        self.sofa.reparentTo(self.render)
+        self.sofa.setScale(0.09, 0.09, 0.09)
+        self.sofa.setTexture(
+            self.loader.loadTexture('la_muse.jpg'), 1)
+
         # Needed for camera image
         self.dr = self.camNode.getDisplayRegion(0)
 

@@ -55,6 +55,8 @@ Inexorable: The World a House of One
 
 - Why voxels? Helps with layout generation. Can make into grid.
 
+- triangle soup, degenerate meshes :(
+
 - Generate textures: unconditional image generation (with a GAN?). Use [this](https://github.com/akanimax/BMSG-GAN). StyleGAN might take too long to train. Can also do texture synthesis on top of this, or separate from this (to generate an additional set of textures to use). Multiple texture generation methods.
 
 ### Conceptual Ideas
@@ -131,7 +133,7 @@ python3 utils/vox2mesh.py <postprocessed mat path>
 Assign texture coordinates based on a mesh parameterization.
 ```
 cd mesh-parameterization/build
-./mesh-parameterization <obj path>
+./add-texcoords <in.obj> <out.obj>
 ```
 
 ### [3] Mesh stylization
@@ -152,7 +154,7 @@ Documentation of your results in an appropriate format, both links to files and 
 
 ## Technical Notes
 
-To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip).
+To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip). For parameterization, you will need to install [CGAL](https://www.cgal.org/download/linux.html).
 
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
