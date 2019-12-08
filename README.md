@@ -147,12 +147,17 @@ python met_download.py --csv=../openaccess/MetObjects.csv --out=<data dir> --art
 rm <data dir>/piece_info.csv
 ```
 
+Preprocess the training data.
+```
+python3 utils/preprocess_art.py <old data dir> <new data dir> --no_boundary --init_rescale 0.6
+```
+
 Train the MSG-GAN on the art data.
 ```
 cd BMSG-GAN
 export SM_CHANNEL_TRAINING=<data dir>
 export SM_MODEL_DIR=models/exp_1
-python3 sourcecode/train.py --depth=6 --latent_size=512 --num_epochs=500 --flip_augment=True --sample_dir=samples/exp_1 --model_dir=models/exp_1 --images_dir=<data dir>
+python3 sourcecode/train.py --depth=6 --latent_size=512 --num_epochs=500 --batch_size=5 --d_lr=0.0003 --checkpoint_factor=10 --flip_augment=True --sample_dir=samples/exp_1 --model_dir=<models dir>/exp_1 --images_dir=<data dir>
 ```
 
 ### [4] Scene layout design, [5] Real-time scene construction
