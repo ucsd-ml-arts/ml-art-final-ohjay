@@ -168,7 +168,16 @@ Train the MSG-GAN on the art data.
 cd BMSG-GAN
 export SM_CHANNEL_TRAINING=<data dir>
 export SM_MODEL_DIR=models/exp_1
-python3 sourcecode/train.py --depth=6 --latent_size=512 --num_epochs=500 --batch_size=5 --d_lr=0.0003 --checkpoint_factor=10 --flip_augment=True --sample_dir=samples/exp_1 --model_dir=<models dir>/exp_1 --images_dir=<data dir>
+python3 sourcecode/train.py --depth=6 \
+                            --latent_size=512 \
+                            --num_epochs=500 \
+                            --batch_size=5 \
+                            --feedback_factor=1 \
+                            --checkpoint_factor=20 \
+                            --flip_augment=True \
+                            --sample_dir=samples/exp_1 \
+                            --model_dir=<models dir>/exp_1 \
+                            --images_dir=<data dir>
 ```
 
 Use the trained MSG-GAN to generate textures for meshes.
