@@ -1,0 +1,4 @@
+# CHANGE ME
+mesh_dir: processed_objs
+texture_dir: synthesized_textures
+layout_dir: layout_maps

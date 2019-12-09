@@ -23,7 +23,7 @@ Here I revisit the 3D world of [my "generative visual" project](https://github.c
 ### [1] Voxel object generation
 
 - I generate objects for five classes of objects (car, chair, desk, gun, and sofa).
-- Why voxel objects? It helps with layout generation. You can easily describe a set of voxel objects by a 2D top-down grid.
+- Why voxels? It helps with layout generation. You can easily describe a set of voxel objects by a 2D top-down grid.
 
 ### [2] Voxel/mesh conversion
 
@@ -234,14 +234,14 @@ python3 generate_samples.py --model_class CVAE \
 
 ### [5] Real-time scene construction
 
-Set paths in the config file, then run
+Set paths in the [config file](config.yaml), then run
 ```
 python3 renderloop.py
 ```
 
 ### [6] Offline scene construction
 
-Set paths in the config file, then run
+Set paths in the [config file](config.yaml), then run
 ```
 python3 renderloop.py --offline
 ```
