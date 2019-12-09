@@ -111,6 +111,8 @@ cmake ..
 make
 ```
 
+Download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
+
 ## Usage
 
 ### [1] Voxel object generation
@@ -183,12 +185,52 @@ python3 sourcecode/train.py --depth=6 \
 Use the trained MSG-GAN to generate textures for meshes.
 ```
 cd BMSG-GAN
-python3 sourcecode/generate_samples.py --generator_file=<models dir>/exp_1/<checkpoint> --latent_size=512 --depth=6 --num_samples=300 --out_dir=<texture dir>
+python3 sourcecode/generate_samples.py --generator_file=<models dir>/exp_1/<checkpoint> \
+                                       --latent_size=512 \
+                                       --depth=6 \
+                                       --num_samples=300 \
+                                       --out_dir=<texture dir>
 ```
 
-### [4] Scene layout design, [5] Real-time scene construction
+Synthesize additional textures at a desired resolution.
+```
+cd subjective-functions
+KERAS_BACKEND=tensorflow python3 synthesize.py -s <input_tex.jpg> \
+                                               --output-width 512 \
+                                               --output-height 512
+```
 
-### [4] Scene layout design, [6] Offline scene construction
+### [4] Scene layout design
+
+Train the layout design network. (Prerequisite: download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).)
+```
+cd sdae
+python3 sdae.py \
+    --batch_size 128 \
+    --learning_rate 0.001 \
+    --num_epochs 50 \
+    --model_class MNISTSVAE \
+    --dataset_key resisc \
+    --noise_type gs \
+    --gaussian_stdev 0.4 \
+    --save_path ./ckpt/sdvae.pth \
+    --weight_decay 0.0000001 \
+    --vae_reconstruction_loss_type bce
+```
+
+### [5] Real-time scene construction
+
+Set paths in the config file, then run
+```
+python3 renderloop.py
+```
+
+### [6] Offline scene construction
+
+Set paths in the config file, then run
+```
+python3 renderloop.py --offline
+```
 
 ## Results
 
@@ -203,6 +245,8 @@ Documentation of your results in an appropriate format, both links to files and 
 ## Technical Notes
 
 To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip). To download the Met catalog, you will need [Git LFS](https://github.com/git-lfs/git-lfs/wiki/Installation).
+
+You can train the MSG-GAN on Jupyterhub, using e.g. `utils/train_msg_gan.sh`.
 
 Any implementation details or notes we need to repeat your work. 
 - Does this code require other pip packages, software, etc?
@@ -222,6 +266,9 @@ Any implementation details or notes we need to repeat your work.
   - _Why didn't I do this?_ Not enough time.
 - More mesh cleanup, e.g. using [PyMesh](https://pymesh.readthedocs.io/en/latest/api_local_mesh_cleanup.html), CGAL, [`libigl`](https://github.com/libigl/libigl-examples/blob/master/skeleton-poser/clean.cpp), etc.
   - _Why didn't I do this?_ Not enough time, and unnecessary.
+- Have the scene design network compute a new layout based on the current layout.
+  - _Why didn't I do this?_ This would imply that at each step of the construction process, I would need to run the network.
+  I wanted to precompute the sampling maps so that I could safely run the program on a laptop in real-time during the showcase.
 
 ## References
 
@@ -244,3 +291,4 @@ Any implementation details or notes we need to repeat your work.
   - [`scikit` marching cubes documentation](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.marching_cubes_lewiner)
   - [`libigl` tutorial](https://libigl.github.io)
   - [The Met Collection](https://www.metmuseum.org/art/collection)
+  - [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html)

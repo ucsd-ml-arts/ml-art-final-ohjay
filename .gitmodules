@@ -13,3 +13,9 @@
 [submodule "BMSG-GAN"]
 	path = BMSG-GAN
 	url = https://github.com/in-pursuit-of-beauty/BMSG-GAN.git
+[submodule "subjective-functions"]
+	path = subjective-functions
+	url = https://github.com/in-pursuit-of-beauty/subjective-functions.git
+[submodule "sdae"]
+	path = sdae
+	url = https://github.com/in-pursuit-of-beauty/sdae.git
