@@ -1,4 +1,4 @@
-# Usage: ./train_msg_gan.sh <data_dir>
+# Usage: ./train_msg_gan.sh <absolute path to data_dir>
 
 # 0. Copy this file to the server.
 # 1. Copy data to the server separately.
@@ -7,6 +7,9 @@ data_dir=$1
 # 2. Clone the MSG-GAN repository.
 git clone https://github.com/in-pursuit-of-beauty/BMSG-GAN.git
 cd BMSG-GAN/sourcecode
+
+export SM_CHANNEL_TRAINING=$data_dir
+export SM_MODEL_DIR=models
 
 # 3. Train.
 python train.py --depth=7 \
