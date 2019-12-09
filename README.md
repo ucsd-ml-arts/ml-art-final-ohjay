@@ -4,7 +4,7 @@ Owen Jow, owen@eng.ucsd.edu
 
 ## Abstract Proposal
 
-Here I revisit the 3D world of [my "generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's gentle guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (without using 2D image stylization). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and, generally speaking, the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). I employ models and algorithms such as Wu, Zhang et al.'s 3D-GAN, Karnewar et al.'s MSG-GAN (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I intend to bring a interactive laptop demo in which users can walk around the scene and observe it as it is being constructed.
+Here I revisit the 3D world of [my "generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's gentle guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (but without using 2D image stylization as in the previous project). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I mean to bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
 
 ## Project Components
 
@@ -18,46 +18,48 @@ Here I revisit the 3D world of [my "generative visual" project](https://github.c
 - **[5] Real-time scene construction.** I build up the scene using the stylized/generated objects in an animated fashion.
 - **[6] Offline scene construction.** I also provide an option to write out the scene construction as a video.
 
-## TODO
+## Extended Descriptions
 
-### Implementation
+### [1] Voxel object generation
 
-- Generate voxel objects using [this pretrained thing](https://github.com/zck119/3dgan-release). Stack them to create amalgamations of voxel objects (adds layer of ML "creativity"; chair + chair = chair? chair + desk = ?). Animate the construction, building everything layer-by-layer, from the ground up. Precompute the building sequence, although allow the users to add blocks in real-time and delete blocks in real-time. Can also do stylization in real-time as before.
-- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess."
-- Loosen interactivity constraint; add functionality to automatically write out images and compose them into a video animation.
 - The objects will be voxel objects. Use a GAN to generate voxel objects based on a distribution of `obj` models. See e.g. http://3dgan.csail.mit.edu.
-- Animate the construction of the voxel objects.
-- Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
-- Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
-- Could add appropriate audio as well.
-- Orbit/look/walk around scene and when you come back, there's a bunch more stuff than there was before.
-- Try to stack the voxel objects like Tetris. Find a surface where there is an open space and where the current object can fit (or just stack them up however each individual layer of block falls).
-- Start with nature scene with pandas roaming around. Add man-made objects. If you can do it in real-time, great. Maybe just precompute a sequence, and then can run it on the laptop, with a button to add pre-made ML objects to scene. But it has to look good; that's the point. It needs to have a nice aesthetic quality to it. Also, it needs to fulfill different aspects of the creativity metric.
+- Generate voxel objects using [3D-GAN](https://github.com/zck119/3dgan-release). Stack them to create amalgamations of voxel objects (adds layer of ML "creativity"; chair + chair = chair? chair + desk = ?). Animate the construction, building everything layer-by-layer, from the ground up. Precompute the building sequence, although allow the users to add blocks in real-time and delete blocks in real-time. Can also do stylization in real-time as before.
 
-- generate scene
-- decide placement of objects based on 3d reconstructions of real scenes
-  - Input: a floor plan (a 2D top-down floor plan)
-  - Output: a floor plan with the new object (top-down space determined as voxels)
-  - Because I have voxels; I can easily convert them into a 2D top-down voxel grid
-  - and afterward I can also convert them to obj files to reduce number of meshes
+### [2] Voxel/mesh conversion
 
-- can determine material of objects at same time, based on color of the pixels in the floor plan?
-
-- The world is a 1000x1000x1000 voxel grid. Can be filled. Cannot leave the area.
-
-- A world of layers
-- Discretize into squares of the size of the object, so that you know you won't overlap if possible
-- RGBA image (current floor plan) -> RGBA image (new floor plan). Can train with RGBD images? (convert depth to inverse depth probability in [0, 1]; 1 is closer) [want the top-down to be like looking at an image; a beautiful image.] RGB represents desired color of object. A represents probability that we put the new object there. 1 is higher probability. Use A channel to sample where we put the next object.
-- If entire floor plan is taken, use floor plan for next layer up. I guess objects will hang in the air in Panda3D, which is good.
-- Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
-
-- Why voxels? Helps with layout generation. Can make into grid.
-
+- convert voxel objects to .obj files to reduce number of meshes Panda3D has to deal with (don't want to write voxel engine)
 - triangle soup, degenerate meshes :(
+
+### [3] Mesh stylization
 
 - Generate textures: unconditional image generation (with a GAN?). Use [this](https://github.com/akanimax/BMSG-GAN). StyleGAN might take too long to train. Can also do texture synthesis on top of this, or separate from this (to generate an additional set of textures to use). Multiple texture generation methods.
 
-### Conceptual Ideas
+### [4] Scene layout design
+
+- Try to stack the voxel objects like Tetris. Find a surface where there is an open space and where the current object can fit (or just stack them up however each individual layer of block falls).
+- decide placement of objects
+  - Input: a floor plan (a 2D top-down floor plan)
+  - Output: a floor plan with the new object (top-down space determined as voxels)
+- The world is a 1000x1000x1000 voxel grid. Can be filled. Cannot leave the area.
+- Discretize into squares of the size of the object, so that you know you won't overlap if possible
+- Want the top-down to be like looking at an image; a beautiful image. Value represents probability that we put the new object there. 1 is higher probability. Use map to sample where we put the next object.
+- If entire floor plan is taken, use floor plan for next layer up. I guess objects will hang in the air in Panda3D, which is good.
+- Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
+- Why voxels? Helps with layout generation. Can make into 2D top-down grid.
+
+### [5] Real-time scene construction
+
+- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess."
+- Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
+- Orbit/look/walk around scene and when you come back, there's a bunch more stuff than there was before.
+
+### [6] Offline scene construction
+
+- Automatically write out images and compose them into a video animation depicting the construction of the voxel objects.
+- Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
+- Start with nature scene with pandas roaming around. Add man-made objects. If you can do it in real-time, great. Maybe just precompute a sequence, and then can run it on the laptop, with a button to add pre-made ML objects to scene. But it has to look good; that's the point. It needs to have a nice aesthetic quality to it. Also, it needs to fulfill different aspects of the creativity metric.
+
+### Symbolism
 
 - To get started, the user can click a button to add things to the scene, not realizing at that point that it's only going to get more and more cluttered; nothing will ever really go away; it will be difficult to really clean things up.
 - Symbolism:
