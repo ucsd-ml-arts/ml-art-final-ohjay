@@ -4,7 +4,7 @@ Owen Jow, owen@eng.ucsd.edu
 
 ## Abstract Proposal
 
-FIRST STEP: Write up a description (in the form of an abstract) of what you will revisit for your final project. This should be one paragraph clearly describing your concept and approach. What are your desired creative goals? How are you expanding on something we covered in the class? How will you present your work next Wednesday in the final project presentations?
+Here I revisit the 3D world of [my "generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's gentle guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (without using 2D image stylization). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and, generally speaking, the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). I employ models and algorithms such as Wu, Zhang et al.'s 3D-GAN, Karnewar et al.'s MSG-GAN (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I intend to bring a interactive laptop demo in which users can walk around the scene and observe it as it is being constructed.
 
 ## Project Components
 
@@ -14,7 +14,7 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 - **[4] Scene layout design.** I use ML to determine the placement of objects in the scene.
 
 ### Non-ML-Based
-- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes.
+- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes, and add texture coordinates to the meshes according to a cut-based parameterization method.
 - **[5] Real-time scene construction.** I build up the scene using the stylized/generated objects in an animated fashion.
 - **[6] Offline scene construction.** I also provide an option to write out the scene construction as a video.
 
@@ -81,13 +81,19 @@ FIRST STEP: Write up a description (in the form of an abstract) of what you will
 
 ## Project Report
 
+You can find my project report [here](TODO).
+
 Upload your project report (4 pages) as a pdf with your repository, following this template: [google docs](https://drive.google.com/open?id=1mgIxwX1VseLyeM9uPSv5GJQgRWNFqtBZ0GKE9d4Qxww).
 
 ## Model/Data
 
-Briefly describe the files that are included with your repository:
-- trained models
-- training data (or link to training data)
+- You can download a pre-trained 3D-GAN model according to the instructions in [the repo](https://github.com/in-pursuit-of-beauty/3dgan-release).
+- You can download a pre-trained MSG-GAN model from [this link](TODO).
+  - This is the model which is used for generating artistic mesh textures. It was trained for X epochs on a dataset of Van Gogh paintings.
+  - Speaking of which, you can download and preprocess the Van Gogh dataset from [The Met Collection](https://www.metmuseum.org/art/collection) according to the instructions in the [stylization usage section](#3-mesh-stylization).
+- You can download a pre-trained scene layout model from [this link](TODO).
+  - This is the convolutional VAE model which is used to generate layout sampling maps. It was trained for X epochs on the RESISC45 satellite imagery dataset.
+  - Speaking of which, you can download the RESISC45 dataset from [this link](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
 
 ## Code
 
@@ -99,6 +105,8 @@ Briefly describe the files that are included with your repository:
 - `mesh-parameterization/src/main.cpp`: Add texture coordinates to OBJs.
 - `mesh-parameterization/src/parameterize_mesh.cpp`: Do mesh parameterization.
 - `The-Metropolitan-Museum-of-Art-Image-Downloader/met_download.py`: Download art data.
+- `sdae/train.py`: Train the convolutional VAE for scene layout generation.
+- `sdae/generate_samples.py`: Generate scene layouts using the trained VAE.
 
 ## Setup
 
@@ -255,11 +263,7 @@ Documentation of your results in an appropriate format, both links to files and 
 
 To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/getting-started.html) and maybe [this](https://github.com/nagadomi/waifu2x/issues/253#issuecomment-445448928)). For mesh visualization, you may want to install `mayavi` (this can be done via pip). To download the Met catalog, you will need [Git LFS](https://github.com/git-lfs/git-lfs/wiki/Installation).
 
-You can train the MSG-GAN on Jupyterhub, using e.g. `utils/train_msg_gan.sh`.
-
-Any implementation details or notes we need to repeat your work. 
-- Does this code require other pip packages, software, etc?
-- Does it run on some other (non-datahub) platform? (CoLab, etc.)
+I ran most of the computation-heavy code on a desktop computer with Ubuntu 18.04. You can also train the MSG-GAN on Jupyterhub, using e.g. `utils/train_msg_gan.sh` (I have confirmed that this works).
 
 ## Other Potential Directions
 
