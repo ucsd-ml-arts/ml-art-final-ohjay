@@ -22,42 +22,37 @@ Here I revisit the 3D world of [my "generative visual" project](https://github.c
 
 ### [1] Voxel object generation
 
-- The objects will be voxel objects. Use a GAN to generate voxel objects based on a distribution of `obj` models. See e.g. http://3dgan.csail.mit.edu.
-- Generate voxel objects using [3D-GAN](https://github.com/zck119/3dgan-release). Stack them to create amalgamations of voxel objects (adds layer of ML "creativity"; chair + chair = chair? chair + desk = ?). Animate the construction, building everything layer-by-layer, from the ground up. Precompute the building sequence, although allow the users to add blocks in real-time and delete blocks in real-time. Can also do stylization in real-time as before.
+- I generate objects for five classes of objects (car, chair, desk, gun, and sofa).
+- Why voxel objects? It helps with layout generation. You can easily describe a set of voxel objects by a 2D top-down grid.
 
 ### [2] Voxel/mesh conversion
 
-- convert voxel objects to .obj files to reduce number of meshes Panda3D has to deal with (don't want to write voxel engine)
-- triangle soup, degenerate meshes :(
+- I convert voxel objects to `.obj` files in order to reduce the number of meshes that Panda3D has to deal with (on the premise that I don't want to write a voxel engine).
+- Unfortunately, the converted meshes are degenerate, and even a slew of online remeshing/repair software has failed to fix them to the point where many standard geometry processing operations (e.g. geodesic distances, harmonic map parameterizations) will actually work properly.
 
 ### [3] Mesh stylization
 
-- Generate textures: unconditional image generation (with a GAN?). Use [this](https://github.com/akanimax/BMSG-GAN). StyleGAN might take too long to train. Can also do texture synthesis on top of this, or separate from this (to generate an additional set of textures to use). Multiple texture generation methods.
+- I use GAN-based unconditional image generation to generate mesh textures. I choose to use [MSG-GAN](https://github.com/akanimax/BMSG-GAN) for its purported stability and because StyleGAN sounds like it might take longer to train.
+- I also apply a synthesis method on top of this, such that I can generate an unlimited number of textures.
 
 ### [4] Scene layout design
 
-- Try to stack the voxel objects like Tetris. Find a surface where there is an open space and where the current object can fit (or just stack them up however each individual layer of block falls).
-- decide placement of objects
-  - Input: a floor plan (a 2D top-down floor plan)
-  - Output: a floor plan with the new object (top-down space determined as voxels)
-- The world is a 1000x1000x1000 voxel grid. Can be filled. Cannot leave the area.
-- Discretize into squares of the size of the object, so that you know you won't overlap if possible
-- Want the top-down to be like looking at an image; a beautiful image. Value represents probability that we put the new object there. 1 is higher probability. Use map to sample where we put the next object.
-- If entire floor plan is taken, use floor plan for next layer up. I guess objects will hang in the air in Panda3D, which is good.
-- Make the network a small fully convolutional network so that I can run it on a laptop and it doesn't take too much memory or time. The actual quality is not extremely important since it is an artistic application and not a reconstructive one.
-- Why voxels? Helps with layout generation. Can make into 2D top-down grid.
+- I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized so that the value at each location can represent a probability. I use these maps in order to sample where to place each object. (Each pixel value describes the probability that we put each new object there.) I drop the objects from the sky as if they're coming from "the creator." An object will fall until it hits either the ground or an existing object, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
+- The full world is discretized as a 256x256x256 voxel grid. Users are prevented from leaving this area.
+- The CVAE is trained on satellite imagery. Alternatively, it could be trained on any grayscale image data. For example, if it were trained on MNIST, then the scenes would build up like 3D numbers.
+- The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the application is primarily artistic, not reconstructive.
 
 ### [5] Real-time scene construction
 
-- Allow users to add more and more objects to the 3D scene, s.t. it starts simple but gets messier and messier. Style transfer can also be used to increase the sense of "mess."
-- Provide a button to delete objects which is essentially ineffectual; even if users apply the button, the "stuff" should grow exponentially.
-- Orbit/look/walk around scene and when you come back, there's a bunch more stuff than there was before.
+- I allow users to add objects to the 3D scene.
+- I allow users to delete objects, but this functionality is essentially ineffectual, since the rate of growth is faster than the maximum rate of deletion.
+- Users can orbit or walk around the scene as it grows.
 
 ### [6] Offline scene construction
 
-- Automatically write out images and compose them into a video animation depicting the construction of the voxel objects.
-- Add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
-- Start with nature scene with pandas roaming around. Add man-made objects. If you can do it in real-time, great. Maybe just precompute a sequence, and then can run it on the laptop, with a button to add pre-made ML objects to scene. But it has to look good; that's the point. It needs to have a nice aesthetic quality to it. Also, it needs to fulfill different aspects of the creativity metric.
+- In this mode, the program will automatically compute and save an animation depicting the layer-by-layer construction of the scene.
+- As part of the animation, I add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
+- The scene begins as a natural environment with free-roaming pandas, but then the man-made objects take over.
 
 ### Symbolism
 
