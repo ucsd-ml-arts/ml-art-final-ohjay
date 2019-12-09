@@ -205,17 +205,28 @@ KERAS_BACKEND=tensorflow python3 synthesize.py -s <input_tex.jpg> \
 Train the layout design network. (Prerequisite: download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).)
 ```
 cd sdae
-python3 sdae.py \
-    --batch_size 128 \
+python3 train.py \
+    --batch_size 32 \
     --learning_rate 0.001 \
     --num_epochs 50 \
-    --model_class MNISTSVAE \
+    --model_class CVAE \
     --dataset_key resisc \
     --noise_type gs \
     --gaussian_stdev 0.4 \
-    --save_path ./ckpt/sdvae.pth \
-    --weight_decay 0.0000001 \
-    --vae_reconstruction_loss_type bce
+    --save_path ./ckpt/cvae.pth \
+    --weight_decay 0.0000001
+```
+
+Use the trained network to generate layouts.
+```
+cd sdae
+python3 generate_samples.py \
+    --model_class CVAE \
+    --restore_path ./ckpt/cvae.pth \
+    --num 10 \
+    --sample_h 256 \
+    --sample_w 256 \
+    --fig_save_path cvae_samples.png
 ```
 
 ### [5] Real-time scene construction
@@ -285,6 +296,7 @@ Any implementation details or notes we need to repeat your work.
   - [`mesh-parameterization`](https://github.com/ohjay/mesh-parameterization) (this is my repository, but...)
   - [The Met Image Downloader](https://github.com/trevorfiez/The-Metropolitan-Museum-of-Art-Image-Downloader)
   - [`metmuseum/openaccess`](https://github.com/metmuseum/openaccess)
+  - [`sdae` (scene design autoencoder)](https://github.com/ohjay/sdae) [aka "stacked denoising autoencoder"]
 - Other
   - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
   - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
