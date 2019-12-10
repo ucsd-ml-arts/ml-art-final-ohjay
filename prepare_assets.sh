@@ -60,7 +60,7 @@ cd ..
 cd sdae
 python3 train.py --batch_size 32 \
                  --learning_rate 0.001 \
-                 --num_epochs 500 \
+                 --num_epochs 5000 \
                  --model_class CVAE \
                  --dataset_key resisc \
                  --noise_type gs \
