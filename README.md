@@ -71,13 +71,21 @@ You can find my project report [here](report/report.pdf).
 ## Code
 
 - `renderloop.py`: The main file. Launches the rendering loop.
+- `prepare_assets.sh`: Generates meshes, textures, and layouts in one fell swoop.
 - `utils/vox2mesh.py`: Convert voxel grids to meshes and export as OBJs.
 - `utils/preprocess_art.py`: Code for preprocessing/augmenting the art dataset.
+- `utils/convert_all.sh`: Does postprocessing for all generated voxel objects.
+- `utils/finalize_textures.sh`: Synthesizes additional textures.
+- `utils/remove_bad_meshes.sh`: Removes meshes without texture coordinates.
+- `utils/train_msg_gan.sh`: Convenience script for training the MSG-GAN (for use on cluster).
+- `utils/write_video.py`: Takes a bunch of images and turns them into a video.
+- `3dgan-release/main.lua`: Generates voxel objects.
 - `3dgan-release/visualization/python/postprocess.py`: Postprocess voxel objects.
 - `BMSG-GAN/sourcecode/train.py`: Train the art texture generator.
 - `mesh-parameterization/src/main.cpp`: Add texture coordinates to OBJs.
 - `mesh-parameterization/src/parameterize_mesh.cpp`: Do mesh parameterization.
 - `The-Metropolitan-Museum-of-Art-Image-Downloader/met_download.py`: Download art data.
+- `subjective-functions/synthesize.py`: Performs texture synthesis from input samples.
 - `sdae/train.py`: Train the convolutional VAE for scene layout generation.
 - `sdae/generate_samples.py`: Generate scene layouts using the trained VAE.
 
