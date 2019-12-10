@@ -27,3 +27,6 @@ for mat_path in $VOXEL_DIR/*sample.mat; do
         echo "Finished converting ${out_mesh_path}."
     done
 done
+
+# Remove meshes for which UV mapping failed.
+python3 utils/remove_bad_meshes.py $OUTPUT_MESH_DIR
