@@ -186,13 +186,14 @@ Train the layout design network. (Prerequisite: download the [RESISC45 dataset](
 cd sdae
 python3 train.py --batch_size 32 \
                  --learning_rate 0.001 \
-                 --num_epochs 50 \
+                 --num_epochs 500 \
                  --model_class CVAE \
                  --dataset_key resisc \
                  --noise_type gs \
                  --gaussian_stdev 0.4 \
                  --save_path ./ckpt/cvae.pth \
-                 --weight_decay 0.0000001
+                 --weight_decay 0.0000001 \
+                 --dataset_path <resisc data path>
 ```
 
 Use the trained network to generate layouts.
@@ -203,7 +204,7 @@ python3 generate_samples.py --model_class CVAE \
                             --num 10 \
                             --sample_h 256 \
                             --sample_w 256 \
-                            --fig_save_path cvae_samples.png
+                            --out_dir <layouts dir>
 ```
 
 ### [5] Real-time scene construction
