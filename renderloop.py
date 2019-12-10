@@ -1,3 +1,5 @@
+import os
+import yaml
 import imageio
 import argparse
 import numpy as np
@@ -14,6 +16,14 @@ loadPrcFileData('', 'win-size {w} {h}'.format(w=600, h=450))
 
 KEY_A = keyboard.KeyCode.from_char('a')
 KEY_S = keyboard.KeyCode.from_char('s')
+
+
+def get_files_with_extension(folder, ext):
+    paths = []
+    for fname in os.listdir(folder):
+        if fname.endswith(ext):
+            paths.append(os.path.join(folder, fname))
+    return paths
 
 
 class OutputWindow:
@@ -97,12 +107,7 @@ class BeautyApp(ShowBase):
         self.scene.setScale(0.25, 0.25, 0.25)
         self.scene.setPos(-8, 42, 0)
 
-        # Add model.
-        self.sofa = self.loader.loadModel('out_tc.obj')
-        self.sofa.reparentTo(self.render)
-        self.sofa.setScale(0.09, 0.09, 0.09)
-        self.sofa.setTexture(
-            self.loader.loadTexture('la_muse.jpg'), 1)
+        self.models = {}
 
         # Needed for camera image
         self.dr = self.camNode.getDisplayRegion(0)
@@ -119,16 +124,44 @@ class BeautyApp(ShowBase):
         image = np.flipud(image)
         return image
 
+    def add_model(self, mesh_path, texture_path):
+        self.models[mesh_path] = self.loader.loadModel(mesh_path)
+        self.models[mesh_path].reparentTo(self.render)
+        self.models[mesh_path].setScale(0.09, 0.09, 0.09)
+        self.models[mesh_path].setTexture(
+            self.loader.loadTexture(texture_path), 1)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--config_path', type=str, default='config.yaml')
+    parser.add_argument('--offline', action='store_true')
+    parser.add_argument('--out_dir', type=str, default='out')
     args = parser.parse_args()
+
+    offline = args.offline
+    out_dir = args.out_dir
+    config = yaml.load(open(args.config_path, 'r'), Loader=yaml.FullLoader)
+    mesh_dir = config['mesh_dir']
+    texture_dir = config['texture_dir']
+    layout_dir = config['layout_dir']
+
+    mesh_paths = get_files_with_extension(mesh_dir, '.obj')
+    texture_paths = get_files_with_extension(texture_dir, '.jpg')
+    layout_paths = get_files_with_extension(layout_dir, '.jpg')
 
     app = BeautyApp()
     window_name = 'Inexorable'
-    output_window = OutputWindow(window_name)
+    if offline:
+        frames = 1800
+        output_window = None
+    else:
+        frames = 99999
+        output_window = OutputWindow(window_name)
 
-    frames = 99999
+    # functionality test (TODO remove)
+    app.add_model('out_tc.obj', 'la_muse.jpg')
+
     pos_step = 0.2
     yaw_step = 0.5
     start_time = time.time()
@@ -141,58 +174,65 @@ if __name__ == '__main__':
     for t in range(frames):
         update = (t == 0)
 
-        if image is not None and output_window.take_snapshot:
+        if image is not None and (offline or output_window.take_snapshot):
             snapshot_path = 'frame%d.png' % (t - 1)
+            snapshot_path = os.path.join(out_dir, snapshot_path)
             imageio.imwrite(snapshot_path, app.get_camera_image())
             print('Wrote `%s`.' % snapshot_path)
-            output_window.take_snapshot = False
+            if output_window:
+                output_window.take_snapshot = False
 
-        # update yaw
-        if output_window.is_pressed['yaw-left']:
-            app.cam.setHpr(app.cam.getH() + yaw_step, 0, 0)
-            update = True
-        elif output_window.is_pressed['yaw-right']:
-            app.cam.setHpr(app.cam.getH() - yaw_step, 0, 0)
-            update = True
+        if offline:
+            # setHpr according to precomputed sequence?
+            # setPos according to precomputed sequence?
+            pass
+        else:
+            # update yaw
+            if output_window.is_pressed['yaw-left']:
+                app.cam.setHpr(app.cam.getH() + yaw_step, 0, 0)
+                update = True
+            elif output_window.is_pressed['yaw-right']:
+                app.cam.setHpr(app.cam.getH() - yaw_step, 0, 0)
+                update = True
 
-        # update pos: diagonal prep
-        lr_pressed = output_window.is_pressed['left'] or \
-                     output_window.is_pressed['right']
-        ud_pressed = output_window.is_pressed['forward'] or \
-                     output_window.is_pressed['backward']
-        pos_step_adjusted = pos_step
-        if lr_pressed and ud_pressed:
-            pos_step_adjusted /= np.sqrt(2)
+            # update pos: diagonal prep
+            lr_pressed = output_window.is_pressed['left'] or \
+                        output_window.is_pressed['right']
+            ud_pressed = output_window.is_pressed['forward'] or \
+                        output_window.is_pressed['backward']
+            pos_step_adjusted = pos_step
+            if lr_pressed and ud_pressed:
+                pos_step_adjusted /= np.sqrt(2)
 
-        # update pos
-        if output_window.is_pressed['left']:
-            right = app.render.getRelativeVector(app.cam, Vec3(1, 0, 0))
-            curr_pos = app.cam.getPos()
-            new_x = curr_pos.x - right.x * pos_step_adjusted
-            new_y = curr_pos.y - right.y * pos_step_adjusted
-            app.cam.setPos(new_x, new_y, 3)
-            update = True
-        elif output_window.is_pressed['right']:
-            right = app.render.getRelativeVector(app.cam, Vec3(1, 0, 0))
-            curr_pos = app.cam.getPos()
-            new_x = curr_pos.x + right.x * pos_step_adjusted
-            new_y = curr_pos.y + right.y * pos_step_adjusted
-            app.cam.setPos(new_x, new_y, 3)
-            update = True
-        if output_window.is_pressed['forward']:
-            forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
-            curr_pos = app.cam.getPos()
-            new_x = curr_pos.x + forward.x * pos_step_adjusted
-            new_y = curr_pos.y + forward.y * pos_step_adjusted
-            app.cam.setPos(new_x, new_y, 3)
-            update = True
-        elif output_window.is_pressed['backward']:
-            forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
-            curr_pos = app.cam.getPos()
-            new_x = curr_pos.x - forward.x * pos_step_adjusted
-            new_y = curr_pos.y - forward.y * pos_step_adjusted
-            app.cam.setPos(new_x, new_y, 3)
-            update = True
+            # update pos
+            if output_window.is_pressed['left']:
+                right = app.render.getRelativeVector(app.cam, Vec3(1, 0, 0))
+                curr_pos = app.cam.getPos()
+                new_x = curr_pos.x - right.x * pos_step_adjusted
+                new_y = curr_pos.y - right.y * pos_step_adjusted
+                app.cam.setPos(new_x, new_y, 3)
+                update = True
+            elif output_window.is_pressed['right']:
+                right = app.render.getRelativeVector(app.cam, Vec3(1, 0, 0))
+                curr_pos = app.cam.getPos()
+                new_x = curr_pos.x + right.x * pos_step_adjusted
+                new_y = curr_pos.y + right.y * pos_step_adjusted
+                app.cam.setPos(new_x, new_y, 3)
+                update = True
+            if output_window.is_pressed['forward']:
+                forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
+                curr_pos = app.cam.getPos()
+                new_x = curr_pos.x + forward.x * pos_step_adjusted
+                new_y = curr_pos.y + forward.y * pos_step_adjusted
+                app.cam.setPos(new_x, new_y, 3)
+                update = True
+            elif output_window.is_pressed['backward']:
+                forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
+                curr_pos = app.cam.getPos()
+                new_x = curr_pos.x - forward.x * pos_step_adjusted
+                new_y = curr_pos.y - forward.y * pos_step_adjusted
+                app.cam.setPos(new_x, new_y, 3)
+                update = True
 
         if update:
             # render
@@ -201,8 +241,9 @@ if __name__ == '__main__':
             image = image[:, :, ::-1]  # RGB -> BGR
 
         # show
-        if not output_window.show_bgr_image(image):
-            break
+        if not offline:
+            if not output_window.show_bgr_image(image):
+                break
 
     end_time = time.time()
     print('average FPS: {}'.format(t / (end_time - start_time)))
