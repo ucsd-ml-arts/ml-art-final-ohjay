@@ -4,7 +4,7 @@ Owen Jow, owen@eng.ucsd.edu
 
 ## Abstract Proposal
 
-Here I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (though without using 2D image stylization as in the previous project). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [in the following section](#project-components). Basically, I coerce some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
+Here I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (though without using 2D image stylization as in the previous project). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). Basically, I coerce some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
 
 ## Project Components
 
@@ -23,12 +23,12 @@ Here I revisit the 3D world of my ["generative visual" project](https://github.c
 ### [1] Voxel object generation
 
 - I generate objects for five classes of objects (car, chair, desk, gun, and sofa).
-- Why voxels? It helps with layout generation. You can easily describe a set of voxel objects by a 2D top-down grid.
+- Why voxels? They lend well to layout generation, seeing as you can easily describe a set of voxel objects using a 2D top-down grid. Also, voxels look artificial, which contributes to the theme of creation.
 
 ### [2] Voxel/mesh conversion
 
 - I convert voxel objects to `.obj` files in order to reduce the number of meshes that Panda3D has to deal with (on the premise that I don't want to write a voxel engine).
-- Unfortunately, the converted meshes are degenerate, and even a slew of online remeshing/repair software has failed to fix them to the point where many standard geometry processing operations (e.g. geodesic distances, harmonic map parameterizations) will actually work properly.
+- Unfortunately, the converted meshes are degenerate, and even a slew of online remeshing/repair software has failed to fix them to the point where many common geometry processing operations (e.g. geodesic distances, harmonic map parameterizations) will actually work properly.
 
 ### [3] Mesh stylization
 
@@ -37,22 +37,22 @@ Here I revisit the 3D world of my ["generative visual" project](https://github.c
 
 ### [4] Scene layout design
 
-- I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized so that the value at each location can represent a probability. I use these maps in order to sample where to place each object. (Each pixel value describes the probability that we put each new object there.) I drop the objects from the sky as if they're coming from "the creator." An object will fall until it hits either the ground or an existing object, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
-- The full world is discretized as a 256x256x256 voxel grid. Users are prevented from leaving this area.
+- I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized so that the value at each location can represent the probability that we place an object there. I use these maps in order to sample where to place each new object.
 - The CVAE is trained on satellite imagery. Alternatively, it could be trained on any grayscale image data. For example, if it were trained on MNIST, then the scenes would build up like 3D numbers.
-- The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the application is primarily artistic, not reconstructive. It's the thought that counts. :)
+- The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the use case is primarily artistic, not reconstructive. It's the thought that counts. :)
 
 ### [5] Real-time scene construction
 
 - I allow users to add objects to the 3D scene.
 - I allow users to delete objects, but this functionality is essentially ineffectual, since the rate of growth is faster than the maximum rate of deletion.
 - Users can orbit or walk around the scene as it grows.
+- I drop the objects from the sky as if they're coming from "the creator." An object will fall until it hits either the ground or an existing object, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
 
 ### [6] Offline scene construction
 
 - In this mode, the program will automatically compute and save an animation depicting the layer-by-layer construction of the scene.
 - As part of the animation, I add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
-- The scene begins as a natural environment with free-roaming pandas, but then the man-made objects take over.
+- The scene begins as a natural environment with free-roaming pandas, but then the ML-made objects take over.
 
 ## Project Report
 
@@ -63,7 +63,7 @@ You can find my project report [here](report/report.pdf).
 - You can download a pre-trained 3D-GAN model according to the instructions in [the repo](https://github.com/in-pursuit-of-beauty/3dgan-release).
 - You can download a pre-trained MSG-GAN model from [this link](TODO).
   - This is the model which is used for generating artistic mesh textures. It was trained for 730 epochs on a dataset of Van Gogh paintings. I think it could stand to be trained for more.
-  - Speaking of which, you can download and preprocess the Van Gogh dataset from [The Met Collection](https://www.metmuseum.org/art/collection) according to the instructions in the [stylization usage section](#3-mesh-stylization).
+  - Note that you can download and preprocess these Van Gogh paintings by following the instructions in the [stylization usage section](#3-mesh-stylization). They come from [The Met Collection](https://www.metmuseum.org/art/collection)
 - You can download a pre-trained scene layout model from [this link](TODO).
   - This is the convolutional VAE model which is used to generate layout sampling maps. It was trained for X epochs on the RESISC45 satellite imagery dataset.
   - Speaking of which, you can download the RESISC45 dataset from [this link](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
