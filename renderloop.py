@@ -220,17 +220,17 @@ if __name__ == '__main__':
         print('Created output directory at `%s`.' % out_dir)
 
     mesh_paths = get_files_with_extension(mesh_dir, '.obj')
-    texture_paths = get_files_with_extension(texture_dir, '.jpg')
+    texture_paths = get_files_with_extension(texture_dir, ('.jpg', '.png'))
 
     if not layout_path:
         # select random layout path
-        layout_paths = get_files_with_extension(layout_dir, '.jpg')
+        layout_paths = get_files_with_extension(layout_dir, ('.jpg', '.png'))
         layout_path = random.choice(layout_paths)
     layout = imageio.imread(layout_path, as_gray=True)
     # turn layout into PDF for sampling
     layout = np.squeeze(layout)
     layout /= np.sum(layout)  # normalize to [0, 1], sum to 1
-    assert np.sum(layout) == 1, \
+    assert np.isclose(np.sum(layout), 1), \
         'probabilities sum to %f instead of 1' % np.sum(layout)
 
     app = BeautyApp(layout, background_path)
