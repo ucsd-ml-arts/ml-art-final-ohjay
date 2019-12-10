@@ -200,6 +200,7 @@ if __name__ == '__main__':
     parser.add_argument('--config_path', type=str, default='config.yaml')
     parser.add_argument('--offline', action='store_true')
     parser.add_argument('--out_dir', type=str, default='out')
+    parser.add_argument('--out_fps', type=int, default=30)  # for the offline version
     parser.add_argument('--layout_path', type=str)
     parser.add_argument('--background_path', type=str, default='assets/const.jpg')
     args = parser.parse_args()
@@ -208,6 +209,7 @@ if __name__ == '__main__':
     out_dir = args.out_dir
     layout_path = args.layout_path
     background_path = args.background_path
+    fps = args.out_fps
     config = yaml.load(open(args.config_path, 'r'), Loader=yaml.FullLoader)
     mesh_dir = config['mesh_dir']
     texture_dir = config['texture_dir']
@@ -246,7 +248,6 @@ if __name__ == '__main__':
     pos_step = 0.2
     yaw_step = 0.5
     start_time = time.time()
-    fps = 30  # assumption
     if offline:
         obj_add_delay = (frames / fps) / num_objs_to_add
         prev_add_time = 0  # time of prev object drop
@@ -350,6 +351,11 @@ if __name__ == '__main__':
                 break
 
         prev_time = curr_time
+
+    if offline:
+        # write frames to video
+        from utils.write_video import write_video
+        write_video(out_dir, 'out.mov', fps)
 
     end_time = time.time()
     print('average FPS: {}'.format(t / (end_time - start_time)))
