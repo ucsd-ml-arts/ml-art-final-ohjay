@@ -40,7 +40,7 @@ Here I revisit the 3D world of [my "generative visual" project](https://github.c
 - I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized so that the value at each location can represent a probability. I use these maps in order to sample where to place each object. (Each pixel value describes the probability that we put each new object there.) I drop the objects from the sky as if they're coming from "the creator." An object will fall until it hits either the ground or an existing object, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
 - The full world is discretized as a 256x256x256 voxel grid. Users are prevented from leaving this area.
 - The CVAE is trained on satellite imagery. Alternatively, it could be trained on any grayscale image data. For example, if it were trained on MNIST, then the scenes would build up like 3D numbers.
-- The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the application is primarily artistic, not reconstructive.
+- The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the application is primarily artistic, not reconstructive. It's the thought that counts. :)
 
 ### [5] Real-time scene construction
 
@@ -226,10 +226,11 @@ python3 renderloop.py --offline
 
 Documentation of your results in an appropriate format, both links to files and a brief description of their contents:
 - What you include here will very much depend on the format of your final project
-  - image files (`.jpg`, `.png` or whatever else is appropriate)
-  - 3d models
-  - movie files (uploaded to youtube or vimeo due to github file size limits)
-  - ... some other form
+  - textures (drive)
+  - meshes (drive)
+  - layouts (drive)
+  - snapshots of scene with everything (imgur)
+  - video of scene (youtube)
 
 ## Technical Notes
 
