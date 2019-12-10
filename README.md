@@ -169,16 +169,14 @@ cd BMSG-GAN
 python3 sourcecode/generate_samples.py --generator_file=<models dir>/exp_1/<checkpoint> \
                                        --latent_size=512 \
                                        --depth=6 \
+                                       --out_depth=5 \
                                        --num_samples=300 \
                                        --out_dir=<texture dir>
 ```
 
 Synthesize additional textures at a desired resolution.
 ```
-cd subjective-functions
-KERAS_BACKEND=tensorflow python3 synthesize.py -s <input_tex.jpg> \
-                                               --output-width 512 \
-                                               --output-height 512
+./utils/finalize_textures.sh
 ```
 
 ### [4] Scene layout design
