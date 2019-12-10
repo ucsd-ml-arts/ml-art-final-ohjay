@@ -102,6 +102,14 @@ make
 
 Download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
 
+## Quickstart
+
+Edit the parameters at the beginning of `prepare_assets.sh`.
+```
+./prepare_assets.sh    # components [1]-[4]
+python3 renderloop.py  # component [5]
+```
+
 ## Usage
 
 ### [1] Voxel object generation
