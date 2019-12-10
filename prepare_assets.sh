@@ -71,7 +71,7 @@ python3 train.py --batch_size 32 \
 
 python3 generate_samples.py --model_class CVAE \
                             --restore_path ./ckpt/cvae.pth \
-                            --num 10 \
+                            --num 30 \
                             --sample_h 256 \
                             --sample_w 256 \
                             --out_dir ../generated_layouts
