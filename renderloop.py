@@ -1,5 +1,6 @@
 import os
 import yaml
+import random
 import imageio
 import argparse
 import numpy as np
@@ -94,7 +95,7 @@ class OutputWindow:
 
 
 class BeautyApp(ShowBase):
-    def __init__(self):
+    def __init__(self, layout):
         ShowBase.__init__(self)
 
         # Disable the camera trackball controls.
@@ -107,7 +108,15 @@ class BeautyApp(ShowBase):
         self.scene.setScale(0.25, 0.25, 0.25)
         self.scene.setPos(-8, 42, 0)
 
-        self.models = {}
+        self.models = []  # actual models
+        self.model_velocities = {}  # {falling model idx: velocity}
+        self.layout_h = layout.shape[0]
+        self.layout_w = layout.shape[1]
+        self.layout_size = self.layout_h * self.layout_w
+        self.layout = layout.flatten()
+        self.scene_scale = 50  # half of top-down side length of scene
+        self.start_height = 10
+        self.terminal_vel = 200  # hardcoded approximation (m)
 
         # Needed for camera image
         self.dr = self.camNode.getDisplayRegion(0)
@@ -125,11 +134,59 @@ class BeautyApp(ShowBase):
         return image
 
     def add_model(self, mesh_path, texture_path):
-        self.models[mesh_path] = self.loader.loadModel(mesh_path)
-        self.models[mesh_path].reparentTo(self.render)
-        self.models[mesh_path].setScale(0.09, 0.09, 0.09)
-        self.models[mesh_path].setTexture(
+        self.models.append(self.loader.loadModel(mesh_path))
+        self.models[-1].reparentTo(self.render)
+        self.models[-1].setScale(0.09, 0.09, 0.09)
+        self.models[-1].setTexture(
             self.loader.loadTexture(texture_path), 1)
+        self.models[-1].setPos(*self.sample_pos())
+        self.model_velocities[len(self.models) - 1] = 0
+        print('added model %s at location %r' \
+            % (mesh_path, self.models[-1].getPos()))
+
+    def update_falling_models(self, dt):
+        # Perform position/velocity update for objects in motion.
+        for i, vel in self.model_velocities.items():
+            # velocity update
+            next_vel = vel - 9.8 * dt  # assume dt is in seconds
+            next_vel = min(next_vel, self.terminal_vel)
+            self.model_velocities[i] = next_vel
+            # position update
+            curr_z = self.models[i].getZ()
+            updated_z = max(curr_z + next_vel * dt, 0)
+            self.models[i].setZ(updated_z)
+        models_in_motion = list(self.model_velocities.keys())
+        for i in models_in_motion:
+            if self.models[i].getZ() == 0:
+                # object is no longer falling
+                del self.model_velocities[i]
+
+    def sample_pos(self):
+        sample = np.random.choice(self.layout_size, 1, p=self.layout)
+        y, x = np.unravel_index(sample, (self.layout_h, self.layout_w))
+
+        # mask out already-sampled positions, re-normalize
+        self.layout[y * self.layout_w + x] = 0
+        layout_sum = np.sum(self.layout)
+        if layout_sum == 0:
+            # reset to uniform PDF
+            self.layout = np.ones((self.layout_h, self.layout_w)) / self.layout_size
+        else:
+            self.layout /= layout_sum
+
+        # ----------------------
+        # convert pos2d to pos3d
+        # ----------------------
+        # remember that Panda3D uses a right-handed coordinate system
+        # where x is right, y is forward, and z is up
+        y = (y / self.layout_h) * 2 - 1
+        x = (x / self.layout_w) * 2 - 1
+        pos3d = (
+            x * self.scene_scale,
+            y * self.scene_scale,
+            self.start_height
+        )
+        return pos3d
 
 
 if __name__ == '__main__':
@@ -137,10 +194,12 @@ if __name__ == '__main__':
     parser.add_argument('--config_path', type=str, default='config.yaml')
     parser.add_argument('--offline', action='store_true')
     parser.add_argument('--out_dir', type=str, default='out')
+    parser.add_argument('--layout_path', type=str)
     args = parser.parse_args()
 
     offline = args.offline
     out_dir = args.out_dir
+    layout_path = args.layout_path
     config = yaml.load(open(args.config_path, 'r'), Loader=yaml.FullLoader)
     mesh_dir = config['mesh_dir']
     texture_dir = config['texture_dir']
@@ -148,9 +207,19 @@ if __name__ == '__main__':
 
     mesh_paths = get_files_with_extension(mesh_dir, '.obj')
     texture_paths = get_files_with_extension(texture_dir, '.jpg')
-    layout_paths = get_files_with_extension(layout_dir, '.jpg')
 
-    app = BeautyApp()
+    if not layout_path:
+        # select random layout path
+        layout_paths = get_files_with_extension(layout_dir, '.jpg')
+        layout_path = random.choice(layout_paths)
+    layout = imageio.imread(layout_path, as_gray=True)
+    # turn layout into PDF for sampling
+    layout = np.squeeze(layout)
+    layout /= np.sum(layout)  # normalize to [0, 1], sum to 1
+    assert np.sum(layout) == 1, \
+        'probabilities sum to %f instead of 1' % np.sum(layout)
+
+    app = BeautyApp(layout)
     window_name = 'Inexorable'
     if offline:
         frames = 1800
@@ -159,20 +228,42 @@ if __name__ == '__main__':
         frames = 99999
         output_window = OutputWindow(window_name)
 
-    # functionality test (TODO remove)
-    app.add_model('out_tc.obj', 'la_muse.jpg')
+    num_objs_added = 0
+    num_objs_to_add = 100
 
     pos_step = 0.2
     yaw_step = 0.5
     start_time = time.time()
+    fps = 30  # assumption
+    if offline:
+        obj_add_delay = (frames / fps) / num_objs_to_add
+        prev_add_time = 0  # time of prev object drop
+    else:
+        obj_add_delay = 5  # of seconds until next object drop
+        prev_add_time = start_time  # time of prev object drop
+    init_add_delay = obj_add_delay
 
     # initial cam extrinsics
     app.cam.setPos(42, -40, 3)
     app.cam.setHpr(18, 0, 0)
 
     image = None
+    prev_time = 0 if offline else time.time()
     for t in range(frames):
         update = (t == 0)
+
+        curr_time = t / fps if offline else time.time()
+        app.update_falling_models(curr_time - prev_time)
+
+        if num_objs_added < num_objs_to_add:
+            if curr_time - prev_add_time >= obj_add_delay:
+                # drop a random object onto the scene
+                mesh_path = random.choice(mesh_paths)
+                texture_path = random.choice(texture_paths)
+                app.add_model(mesh_path, texture_path)
+                # update add delay s.t. next object arrives sooner
+                obj_add_delay -= init_add_delay / num_objs_to_add
+                prev_add_time = curr_time
 
         if image is not None and (offline or output_window.take_snapshot):
             snapshot_path = 'frame%d.png' % (t - 1)
@@ -244,6 +335,8 @@ if __name__ == '__main__':
         if not offline:
             if not output_window.show_bgr_image(image):
                 break
+
+        prev_time = curr_time
 
     end_time = time.time()
     print('average FPS: {}'.format(t / (end_time - start_time)))
