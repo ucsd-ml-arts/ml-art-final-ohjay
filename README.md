@@ -229,7 +229,6 @@ Documentation of your results in an appropriate format, both links to files and 
   - image files (`.jpg`, `.png` or whatever else is appropriate)
   - 3d models
   - movie files (uploaded to youtube or vimeo due to github file size limits)
-  - audio files
   - ... some other form
 
 ## Technical Notes
