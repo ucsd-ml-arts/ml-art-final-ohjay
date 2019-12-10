@@ -14,7 +14,7 @@ Here I revisit the 3D world of [my "generative visual" project](https://github.c
 - **[4] Scene layout design.** I use ML to determine the placement of objects in the scene.
 
 ### Non-ML-Based
-- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes, and add texture coordinates to the meshes according to a cut-based parameterization method.
+- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes, and UV map the meshes according to a cut-based parameterization method.
 - **[5] Real-time scene construction.** I build up the scene using the stylized/generated objects in an animated fashion.
 - **[6] Offline scene construction.** I also provide an option to write out the scene construction as a video.
 

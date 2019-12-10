@@ -9,6 +9,7 @@ import cv2
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import loadPrcFileData, Vec3
 from pynput import keyboard
+from direct.gui.OnscreenImage import OnscreenImage
 
 loadPrcFileData('', 'window-type offscreen')
 loadPrcFileData('', 'sync-video 0')
@@ -95,7 +96,7 @@ class OutputWindow:
 
 
 class BeautyApp(ShowBase):
-    def __init__(self, layout):
+    def __init__(self, layout, background_path=None):
         ShowBase.__init__(self)
 
         # Disable the camera trackball controls.
@@ -117,6 +118,11 @@ class BeautyApp(ShowBase):
         self.scene_scale = 50  # half of top-down side length of scene
         self.start_height = 10
         self.terminal_vel = 200  # hardcoded approximation (m)
+
+        if background_path:
+            # https://discourse.panda3d.org/t/background-image/5202/2
+            self.bg = OnscreenImage(parent=render2d, image=background_path)
+            self.camNode.getDisplayRegion(0).setSort(20)
 
         # Needed for camera image
         self.dr = self.camNode.getDisplayRegion(0)
@@ -195,15 +201,21 @@ if __name__ == '__main__':
     parser.add_argument('--offline', action='store_true')
     parser.add_argument('--out_dir', type=str, default='out')
     parser.add_argument('--layout_path', type=str)
+    parser.add_argument('--background_path', type=str, default='assets/const.jpg')
     args = parser.parse_args()
 
     offline = args.offline
     out_dir = args.out_dir
     layout_path = args.layout_path
+    background_path = args.background_path
     config = yaml.load(open(args.config_path, 'r'), Loader=yaml.FullLoader)
     mesh_dir = config['mesh_dir']
     texture_dir = config['texture_dir']
     layout_dir = config['layout_dir']
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+        print('Created output directory at `%s`.' % out_dir)
 
     mesh_paths = get_files_with_extension(mesh_dir, '.obj')
     texture_paths = get_files_with_extension(texture_dir, '.jpg')
@@ -219,7 +231,7 @@ if __name__ == '__main__':
     assert np.sum(layout) == 1, \
         'probabilities sum to %f instead of 1' % np.sum(layout)
 
-    app = BeautyApp(layout)
+    app = BeautyApp(layout, background_path)
     window_name = 'Inexorable'
     if offline:
         frames = 1800
@@ -246,6 +258,7 @@ if __name__ == '__main__':
     # initial cam extrinsics
     app.cam.setPos(42, -40, 3)
     app.cam.setHpr(18, 0, 0)
+    app.graphicsEngine.renderFrame()  # for background
 
     image = None
     prev_time = 0 if offline else time.time()
