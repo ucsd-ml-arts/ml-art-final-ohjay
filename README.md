@@ -238,6 +238,17 @@ To run 3D-GAN, you will need to install Torch (see [this](http://torch.ch/docs/g
 
 I ran most of the computation-heavy code on a desktop computer with Ubuntu 18.04. You can also train the MSG-GAN on Jupyterhub, using e.g. `utils/train_msg_gan.sh` (I have confirmed that this works).
 
+If you're using Python 2, you will need to edit one of the lines in [`renderloop.py`](renderloop.py). In `BeautyApp.get_camera_image`, change
+```
+image = np.frombuffer(data, np.uint8)
+```
+to
+```
+image = np.frombuffer(data.get_data(), np.uint8)
+```
+
+If you're running this on macOS, you should invoke `python3 renderloop.py` with sudo. Otherwise keyboard monitoring won't work due to security restrictions (see [here](https://pynput.readthedocs.io/en/latest/limitations.html#mac-osx)).
+
 ## Other Potential Directions
 
 - Directly generate polygon meshes, e.g. based on [this paper](http://www.nobuyuki-umetani.com/publication/2017_siggatb_explore/2017_siggatb_ExploringGenerative3DShapes.pdf).

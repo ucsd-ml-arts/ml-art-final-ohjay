@@ -3,3 +3,4 @@ lycon==0.2.0
 pynput==1.4.5
 imageio==2.5.0
 mayavi==4.7.1
+PyYAML==5.1.2

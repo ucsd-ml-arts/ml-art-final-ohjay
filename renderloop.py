@@ -128,7 +128,7 @@ class BeautyApp(ShowBase):
         """
         tex = self.dr.getScreenshot()
         data = tex.getRamImageAs('RGB')
-        image = np.frombuffer(data, np.uint8)
+        image = np.frombuffer(data, np.uint8)  # change to `data.get_data()` if using Python 2
         image.shape = (tex.getYSize(), tex.getXSize(), 3)
         image = np.flipud(image)
         return image
@@ -179,8 +179,8 @@ class BeautyApp(ShowBase):
         # ----------------------
         # remember that Panda3D uses a right-handed coordinate system
         # where x is right, y is forward, and z is up
-        y = (y / self.layout_h) * 2 - 1
-        x = (x / self.layout_w) * 2 - 1
+        y = (float(y) / self.layout_h) * 2 - 1
+        x = (float(x) / self.layout_w) * 2 - 1
         pos3d = (
             x * self.scene_scale,
             y * self.scene_scale,
