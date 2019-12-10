@@ -62,7 +62,7 @@ You can find my project report [here](report/report.pdf).
 
 - You can download a pre-trained 3D-GAN model according to the instructions in [the repo](https://github.com/in-pursuit-of-beauty/3dgan-release).
 - You can download a pre-trained MSG-GAN model from [this link](TODO).
-  - This is the model which is used for generating artistic mesh textures. It was trained for 730 epochs on a dataset of Van Gogh paintings.
+  - This is the model which is used for generating artistic mesh textures. It was trained for 730 epochs on a dataset of Van Gogh paintings. I think it could stand to be trained for more.
   - Speaking of which, you can download and preprocess the Van Gogh dataset from [The Met Collection](https://www.metmuseum.org/art/collection) according to the instructions in the [stylization usage section](#3-mesh-stylization).
 - You can download a pre-trained scene layout model from [this link](TODO).
   - This is the convolutional VAE model which is used to generate layout sampling maps. It was trained for X epochs on the RESISC45 satellite imagery dataset.
@@ -150,7 +150,7 @@ Train the MSG-GAN on the art data.
 ```
 cd BMSG-GAN
 export SM_CHANNEL_TRAINING=<data dir>
-export SM_MODEL_DIR=models/exp_1
+export SM_MODEL_DIR=<models dir>/exp_1
 python3 sourcecode/train.py --depth=6 \
                             --latent_size=512 \
                             --num_epochs=500 \
