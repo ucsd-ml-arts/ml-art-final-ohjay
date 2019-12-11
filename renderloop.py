@@ -166,7 +166,9 @@ class BeautyApp(ShowBase):
     def add_model(self, mesh_path, texture_path, pos=None):
         self.models.append(self.loader.loadModel(mesh_path))
         self.models[-1].reparentTo(self.render)
-        self.models[-1].setScale(0.09, 0.09, 0.09)
+        # generate random scale
+        scale = np.clip(np.random.normal(0.16, 0.1), 0.05, 0.4)
+        self.models[-1].setScale(scale, scale, scale)
         self.models[-1].setTexture(
             self.loader.loadTexture(texture_path), 1)
         if pos is None:

@@ -22,7 +22,7 @@ Here I revisit the 3D world of my ["generative visual" project](https://github.c
 
 ### [1] Voxel object generation
 
-- I generate objects for five classes of objects (car, chair, desk, gun, and sofa).
+- I generate objects for three classes of objects (chair, desk, and sofa).
 - Why voxels? They lend well to layout generation, seeing as you can easily describe a set of voxel objects using a 2D top-down grid. Also, voxels look artificial, which contributes to the theme of creation.
 
 ### [2] Voxel/mesh conversion

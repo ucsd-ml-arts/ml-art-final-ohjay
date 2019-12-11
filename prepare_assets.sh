@@ -13,6 +13,8 @@ RESISC_DATA_DIR="/media/owen/ba9d40b5-89de-4832-bad4-156b118e4a66/NWPU-RESISC45"
 
 cd 3dgan-release
 th main.lua -gpu 1 -class all -bs 50 -sample -ss 150
+rm output/car_sample.mat
+rm output/gun_sample.mat
 cd -
 
 ### [2] Voxel/mesh conversion
