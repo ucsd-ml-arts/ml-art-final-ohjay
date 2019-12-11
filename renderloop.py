@@ -308,7 +308,7 @@ if __name__ == '__main__':
         obj_add_delay = (frames / fps) / num_objs_to_add
         prev_add_time = 0  # time of prev object drop
     else:
-        obj_add_delay = 5  # of seconds until next object drop
+        obj_add_delay = 2  # of seconds until next object drop
         prev_add_time = start_time  # time of prev object drop
     init_add_delay = obj_add_delay
 
