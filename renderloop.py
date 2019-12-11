@@ -180,7 +180,7 @@ class BeautyApp(ShowBase):
         num_models = len(self.models)
         if num_models > 0:
             model_idx = np.random.randint(0, num_models)
-            self.models[model_idx].destroy()
+            self.models[model_idx].removeNode()
             self.models[model_idx] = None
             del self.models[model_idx]
             if model_idx in self.model_velocities:
@@ -333,6 +333,7 @@ if __name__ == '__main__':
                 # update add delay s.t. next object arrives sooner
                 obj_add_delay -= init_add_delay / num_objs_to_add
                 prev_add_time = curr_time
+                update = True
 
         if image is not None and (offline or output_window.take_snapshot):
             snapshot_path = 'frame%d.png' % (t - 1)
@@ -360,11 +361,13 @@ if __name__ == '__main__':
                 texture_path = random.choice(texture_paths)
                 app.add_model(mesh_path, texture_path, pos=pos_ahead)
                 output_window.signal_add_model = False
+                update = True
 
             # delete model according to keypress
             if output_window.signal_del_model and t % obj_delete_throttle == 0:
                 app.delete_random_model()
                 output_window.signal_del_model = False
+                update = True
 
             # update yaw
             if output_window.is_pressed['yaw-left']:
