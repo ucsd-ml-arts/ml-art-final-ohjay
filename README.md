@@ -317,3 +317,4 @@ If you're running this on macOS, you should invoke `python3 renderloop.py` with 
   - [Alice Gallery](Alice Gallery)
     - [Chicken (direct link)](http://alice.org/pandagallery/Animals/Chicken2.zip)
     - [Bedroom (direct link)](http://alice.org/pandagallery/Environments/bedroom.zip)
+  - [Sky image](https://www.pexels.com/photo/clouds-heaven-outdoors-space-479821) (from [`icon0.com`](https://www.pexels.com/@freeimages9) on [Pexels](https://www.pexels.com/photo-license/))

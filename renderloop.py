@@ -255,7 +255,7 @@ if __name__ == '__main__':
     parser.add_argument('--out_dir', type=str, default='out')
     parser.add_argument('--out_fps', type=int, default=30)  # for the offline version
     parser.add_argument('--layout_path', type=str)
-    parser.add_argument('--background_path', type=str, default='assets/const.jpg')
+    parser.add_argument('--background_path', type=str, default='assets/sky.jpg')
     parser.add_argument('--no_autospawn', action='store_true')
     args = parser.parse_args()
 
