@@ -100,7 +100,8 @@ cmake ..
 make
 ```
 
-Download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
+- Download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
+- Download the [room scene](http://alice.org/pandagallery/Environments/bedroom.zip) and place it in the `assets/` folder, such that the resulting path is `assets/bedroom/`.
 
 ## Quickstart
 
@@ -230,6 +231,12 @@ Set paths in the [config file](config.yaml), then run
 python3 renderloop.py
 ```
 
+- You can change the camera position with the arrow keys.
+- You can change the camera yaw with the A and D keys.
+- You can change the camera pitch with the W and S keys.
+- You can quit the program using Q or ESC.
+- You can save a snapshot by hitting the spacebar.
+
 ### [6] Offline scene construction
 
 Set paths in the [config file](config.yaml), then run
@@ -305,3 +312,6 @@ If you're running this on macOS, you should invoke `python3 renderloop.py` with 
   - [`libigl` tutorial](https://libigl.github.io)
   - [The Met Collection](https://www.metmuseum.org/art/collection)
   - [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html)
+  - [Alice Gallery](Alice Gallery)
+    - [Chicken (direct link)](http://alice.org/pandagallery/Animals/Chicken2.zip)
+    - [Bedroom (direct link)](http://alice.org/pandagallery/Environments/bedroom.zip)

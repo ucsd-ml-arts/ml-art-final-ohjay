@@ -16,8 +16,10 @@ loadPrcFileData('', 'sync-video 0')
 loadPrcFileData('', 'load-file-type p3assimp')
 loadPrcFileData('', 'win-size {w} {h}'.format(w=600, h=450))
 
+KEY_W = keyboard.KeyCode.from_char('w')
 KEY_A = keyboard.KeyCode.from_char('a')
 KEY_S = keyboard.KeyCode.from_char('s')
+KEY_D = keyboard.KeyCode.from_char('d')
 
 
 def get_files_with_extension(folder, ext):
@@ -34,12 +36,14 @@ class OutputWindow:
 
         # Store which keys are currently pressed.
         self.is_pressed = {
-            'left':      False,
-            'right':     False,
-            'forward':   False,
-            'backward':  False,
-            'yaw-left':  False,
-            'yaw-right': False
+            'left':       False,
+            'right':      False,
+            'forward':    False,
+            'backward':   False,
+            'yaw-left':   False,
+            'yaw-right':  False,
+            'pitch-up':   False,
+            'pitch-down': False,
         }
         self.take_snapshot = False
 
@@ -74,9 +78,15 @@ class OutputWindow:
         elif key == KEY_A:
             self.is_pressed['yaw-left'] = True
             self.is_pressed['yaw-right'] = False
-        elif key == KEY_S:
+        elif key == KEY_D:
             self.is_pressed['yaw-right'] = True
             self.is_pressed['yaw-left'] = False
+        elif key == KEY_W:
+            self.is_pressed['pitch-up'] = True
+            self.is_pressed['pitch-down'] = False
+        elif key == KEY_S:
+            self.is_pressed['pitch-down'] = True
+            self.is_pressed['pitch-up'] = False
 
     def on_key_release(self, key):
         if key == keyboard.Key.left:
@@ -89,8 +99,12 @@ class OutputWindow:
             self.is_pressed['backward'] = False
         elif key == KEY_A:
             self.is_pressed['yaw-left'] = False
-        elif key == KEY_S:
+        elif key == KEY_D:
             self.is_pressed['yaw-right'] = False
+        elif key == KEY_W:
+            self.is_pressed['pitch-up'] = False
+        elif key == KEY_S:
+            self.is_pressed['pitch-down'] = False
         elif key == keyboard.Key.space:
             self.take_snapshot = True
 
@@ -102,12 +116,12 @@ class BeautyApp(ShowBase):
         # Disable the camera trackball controls.
         self.disableMouse()
         # Load the environment model.
-        self.scene = self.loader.loadModel('models/environment')
+        self.scene = self.loader.loadModel('assets/bedroom/bedroom.egg')
         # Reparent the model to render.
         self.scene.reparentTo(self.render)
         # Apply scale and position transforms on the model.
-        self.scene.setScale(0.25, 0.25, 0.25)
-        self.scene.setPos(-8, 42, 0)
+        self.scene.setScale(5, 5, 5)
+        self.scene.setPos(0, 0, 0)
 
         self.models = []  # actual models
         self.model_velocities = {}  # {falling model idx: velocity}
@@ -115,8 +129,10 @@ class BeautyApp(ShowBase):
         self.layout_w = layout.shape[1]
         self.layout_size = self.layout_h * self.layout_w
         self.layout = layout.flatten()
-        self.scene_scale = 50  # half of top-down side length of scene
-        self.start_height = 10
+        self.scene_x_scale = 54  # half of x-length of scene
+        self.scene_y_scale = 72  # half of y-length of scene
+        self.start_height = 39
+        self.object_end_height = 13
         self.terminal_vel = 200  # hardcoded approximation (m)
 
         if background_path:
@@ -152,6 +168,8 @@ class BeautyApp(ShowBase):
 
     def update_falling_models(self, dt):
         # Perform position/velocity update for objects in motion.
+        if len(self.model_velocities) == 0:
+            return False
         for i, vel in self.model_velocities.items():
             # velocity update
             next_vel = vel - 9.8 * dt  # assume dt is in seconds
@@ -159,13 +177,19 @@ class BeautyApp(ShowBase):
             self.model_velocities[i] = next_vel
             # position update
             curr_z = self.models[i].getZ()
-            updated_z = max(curr_z + next_vel * dt, 0)
+            updated_z = max(curr_z + next_vel * dt, self.object_end_height)
             self.models[i].setZ(updated_z)
         models_in_motion = list(self.model_velocities.keys())
         for i in models_in_motion:
-            if self.models[i].getZ() == 0:
+            if self.models[i].getZ() == self.object_end_height:
                 # object is no longer falling
                 del self.model_velocities[i]
+        return True
+
+    @property
+    def num_models_in_motion(self):
+        """Returns the number of models in motion."""
+        return len(self.model_velocities)
 
     def sample_pos(self):
         sample = np.random.choice(self.layout_size, 1, p=self.layout)
@@ -188,11 +212,17 @@ class BeautyApp(ShowBase):
         y = (float(y) / self.layout_h) * 2 - 1
         x = (float(x) / self.layout_w) * 2 - 1
         pos3d = (
-            x * self.scene_scale,
-            y * self.scene_scale,
+            x * self.scene_x_scale,
+            y * self.scene_y_scale,
             self.start_height
         )
         return pos3d
+
+    def enforce_xy_bounds(self, x, y):
+        """Take an X and a Y, cap values at scene X/Y limits."""
+        x = min(max(x, -self.scene_x_scale), self.scene_x_scale)
+        y = min(max(y, -self.scene_y_scale), self.scene_y_scale)
+        return x, y
 
 
 if __name__ == '__main__':
@@ -245,8 +275,8 @@ if __name__ == '__main__':
     num_objs_added = 0
     num_objs_to_add = 100
 
-    pos_step = 0.2
-    yaw_step = 0.5
+    pos_step = 0.7
+    rot_step = 0.8
     start_time = time.time()
     if offline:
         obj_add_delay = (frames / fps) / num_objs_to_add
@@ -257,8 +287,9 @@ if __name__ == '__main__':
     init_add_delay = obj_add_delay
 
     # initial cam extrinsics
-    app.cam.setPos(42, -40, 3)
-    app.cam.setHpr(18, 0, 0)
+    cam_height = 22
+    app.cam.setPos(0, 0, cam_height)
+    app.cam.setHpr(0, 0, 0)
     app.graphicsEngine.renderFrame()  # for background
 
     image = None
@@ -267,7 +298,7 @@ if __name__ == '__main__':
         update = (t == 0)
 
         curr_time = t / fps if offline else time.time()
-        app.update_falling_models(curr_time - prev_time)
+        update = update or app.update_falling_models(curr_time - prev_time)
 
         if num_objs_added < num_objs_to_add:
             if curr_time - prev_add_time >= obj_add_delay:
@@ -294,10 +325,18 @@ if __name__ == '__main__':
         else:
             # update yaw
             if output_window.is_pressed['yaw-left']:
-                app.cam.setHpr(app.cam.getH() + yaw_step, 0, 0)
+                app.cam.setH(app.cam.getH() + rot_step)
                 update = True
             elif output_window.is_pressed['yaw-right']:
-                app.cam.setHpr(app.cam.getH() - yaw_step, 0, 0)
+                app.cam.setH(app.cam.getH() - rot_step)
+                update = True
+
+            # update pitch
+            if output_window.is_pressed['pitch-up']:
+                app.cam.setP(app.cam.getP() + rot_step)
+                update = True
+            elif output_window.is_pressed['pitch-down']:
+                app.cam.setP(app.cam.getP() - rot_step)
                 update = True
 
             # update pos: diagonal prep
@@ -315,28 +354,32 @@ if __name__ == '__main__':
                 curr_pos = app.cam.getPos()
                 new_x = curr_pos.x - right.x * pos_step_adjusted
                 new_y = curr_pos.y - right.y * pos_step_adjusted
-                app.cam.setPos(new_x, new_y, 3)
+                new_x, new_y = app.enforce_xy_bounds(new_x, new_y)
+                app.cam.setPos(new_x, new_y, cam_height)
                 update = True
             elif output_window.is_pressed['right']:
                 right = app.render.getRelativeVector(app.cam, Vec3(1, 0, 0))
                 curr_pos = app.cam.getPos()
                 new_x = curr_pos.x + right.x * pos_step_adjusted
                 new_y = curr_pos.y + right.y * pos_step_adjusted
-                app.cam.setPos(new_x, new_y, 3)
+                new_x, new_y = app.enforce_xy_bounds(new_x, new_y)
+                app.cam.setPos(new_x, new_y, cam_height)
                 update = True
             if output_window.is_pressed['forward']:
                 forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
                 curr_pos = app.cam.getPos()
                 new_x = curr_pos.x + forward.x * pos_step_adjusted
                 new_y = curr_pos.y + forward.y * pos_step_adjusted
-                app.cam.setPos(new_x, new_y, 3)
+                new_x, new_y = app.enforce_xy_bounds(new_x, new_y)
+                app.cam.setPos(new_x, new_y, cam_height)
                 update = True
             elif output_window.is_pressed['backward']:
                 forward = app.render.getRelativeVector(app.cam, Vec3(0, 1, 0))
                 curr_pos = app.cam.getPos()
                 new_x = curr_pos.x - forward.x * pos_step_adjusted
                 new_y = curr_pos.y - forward.y * pos_step_adjusted
-                app.cam.setPos(new_x, new_y, 3)
+                new_x, new_y = app.enforce_xy_bounds(new_x, new_y)
+                app.cam.setPos(new_x, new_y, cam_height)
                 update = True
 
         if update:
