@@ -12,7 +12,7 @@ def get_shape(images_dir):
     for image_name in os.listdir(images_dir):
         image_path = os.path.join(images_dir, image_name)
         image = imageio.imread(image_path)
-        return image.shape
+        return image.shape[:2]
     raise RuntimeError('[-] No files in `%s`.' % images_dir)
 
 def write_video(images_dir, out_path, fps):
