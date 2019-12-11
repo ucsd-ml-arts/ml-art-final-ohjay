@@ -20,6 +20,10 @@ for mat_path in $VOXEL_DIR/*sample.mat; do
         # Perform voxel-to-mesh conversion.
         out_mesh_path="$OUTPUT_MESH_DIR/out_${mat_base%.mat}_$i.obj"
         python3 utils/vox2mesh.py $pp_mat_path -o $out_mesh_path
+        # Convert to watertight manifold.
+        cd Manifold/build
+        ./manifold $out_mesh_path $out_mesh_path
+        cd -
         # Assign texture coordinates.
         cd mesh-parameterization/build
         ./add-texcoords $out_mesh_path $out_mesh_path

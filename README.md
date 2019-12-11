@@ -93,11 +93,14 @@ You can find my project report [here](report/report.pdf).
 
 ```
 git submodule update --init --recursive
-cd mesh-parameterization
-mkdir build
-cd build
-cmake ..
-make
+for submod in mesh-parameterization Manifold; do
+    cd $submod
+    mkdir build
+    cd build
+    cmake ..
+    make
+    cd ../..
+done
 ```
 
 - Download the [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
