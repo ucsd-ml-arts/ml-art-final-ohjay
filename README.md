@@ -310,6 +310,7 @@ If you're running this on macOS, you should invoke `python3 renderloop.py` with 
   - [The Met Image Downloader](https://github.com/trevorfiez/The-Metropolitan-Museum-of-Art-Image-Downloader)
   - [`metmuseum/openaccess`](https://github.com/metmuseum/openaccess)
   - [`sdae` (scene design autoencoder)](https://github.com/ohjay/sdae) [aka "stacked denoising autoencoder"]
+  - [`Manifold`](https://github.com/hjwdzh/Manifold)
 - Other
   - [NumPy arrays from Panda3D textures - gist by Alex Lee](https://gist.github.com/alexlee-gk/b28fb962c9b2da586d1591bac8888f1f)
   - ["Unconditional image generation" leaderboards](https://paperswithcode.com/task/image-generation)
