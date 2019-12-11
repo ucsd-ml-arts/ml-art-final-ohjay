@@ -234,6 +234,8 @@ python3 renderloop.py
 - You can change the camera position with the arrow keys.
 - You can change the camera yaw with the A and D keys.
 - You can change the camera pitch with the W and S keys.
+- You can use the F key to add an object.
+- You can use the U key to delete an object (sometimes).
 - You can quit the program using Q or ESC.
 - You can save a snapshot by hitting the spacebar.
 

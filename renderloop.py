@@ -20,6 +20,8 @@ KEY_W = keyboard.KeyCode.from_char('w')
 KEY_A = keyboard.KeyCode.from_char('a')
 KEY_S = keyboard.KeyCode.from_char('s')
 KEY_D = keyboard.KeyCode.from_char('d')
+KEY_F = keyboard.KeyCode.from_char('f')
+KEY_U = keyboard.KeyCode.from_char('u')
 
 
 def get_files_with_extension(folder, ext):
@@ -46,6 +48,8 @@ class OutputWindow:
             'pitch-down': False,
         }
         self.take_snapshot = False
+        self.signal_add_model = False
+        self.signal_del_model = False
 
         self.listener = keyboard.Listener(
             on_press=self.on_key_press,
@@ -105,6 +109,10 @@ class OutputWindow:
             self.is_pressed['pitch-up'] = False
         elif key == KEY_S:
             self.is_pressed['pitch-down'] = False
+        elif key == KEY_F:
+            self.signal_add_model = True
+        elif key == KEY_U:
+            self.signal_del_model = True
         elif key == keyboard.Key.space:
             self.take_snapshot = True
 
@@ -155,16 +163,29 @@ class BeautyApp(ShowBase):
         image = np.flipud(image)
         return image
 
-    def add_model(self, mesh_path, texture_path):
+    def add_model(self, mesh_path, texture_path, pos=None):
         self.models.append(self.loader.loadModel(mesh_path))
         self.models[-1].reparentTo(self.render)
         self.models[-1].setScale(0.09, 0.09, 0.09)
         self.models[-1].setTexture(
             self.loader.loadTexture(texture_path), 1)
-        self.models[-1].setPos(*self.sample_pos())
+        if pos is None:
+            pos = self.sample_pos()
+        self.models[-1].setPos(*pos)
         self.model_velocities[len(self.models) - 1] = 0
         print('added model %s at location %r' \
             % (mesh_path, self.models[-1].getPos()))
+
+    def delete_random_model(self):
+        num_models = len(self.models)
+        if num_models > 0:
+            model_idx = np.random.randint(0, num_models)
+            self.models[model_idx].destroy()
+            self.models[model_idx] = None
+            del self.models[model_idx]
+            if model_idx in self.model_velocities:
+                del self.model_velocities[model_idx]
+            print('deleted model %d' % model_idx)
 
     def update_falling_models(self, dt):
         # Perform position/velocity update for objects in motion.
@@ -233,6 +254,7 @@ if __name__ == '__main__':
     parser.add_argument('--out_fps', type=int, default=30)  # for the offline version
     parser.add_argument('--layout_path', type=str)
     parser.add_argument('--background_path', type=str, default='assets/const.jpg')
+    parser.add_argument('--no_autospawn', action='store_true')
     args = parser.parse_args()
 
     offline = args.offline
@@ -240,6 +262,7 @@ if __name__ == '__main__':
     layout_path = args.layout_path
     background_path = args.background_path
     fps = args.out_fps
+    no_autospawn = args.no_autospawn
     config = yaml.load(open(args.config_path, 'r'), Loader=yaml.FullLoader)
     mesh_dir = config['mesh_dir']
     texture_dir = config['texture_dir']
@@ -274,6 +297,7 @@ if __name__ == '__main__':
 
     num_objs_added = 0
     num_objs_to_add = 100
+    obj_delete_throttle = 60
 
     pos_step = 0.7
     rot_step = 0.8
@@ -300,7 +324,7 @@ if __name__ == '__main__':
         curr_time = t / fps if offline else time.time()
         update = update or app.update_falling_models(curr_time - prev_time)
 
-        if num_objs_added < num_objs_to_add:
+        if not no_autospawn and num_objs_added < num_objs_to_add:
             if curr_time - prev_add_time >= obj_add_delay:
                 # drop a random object onto the scene
                 mesh_path = random.choice(mesh_paths)
@@ -319,10 +343,29 @@ if __name__ == '__main__':
                 output_window.take_snapshot = False
 
         if offline:
-            # setHpr according to precomputed sequence?
-            # setPos according to precomputed sequence?
-            pass
+            # spin around and look at scene as it builds up
+            app.cam.setH(app.cam.getH() + rot_step)
+            update = True
         else:
+            # add model according to keypress
+            if output_window.signal_add_model:
+                # compute position in front of camera
+                forward = app.render.getRelativeVector(app.cam, Vec3(0, 50, 0))
+                curr_pos = app.cam.getPos()
+                xa, ya = app.enforce_xy_bounds(curr_pos.x + forward.x,
+                                               curr_pos.y + forward.y)
+                pos_ahead = (xa, ya, app.object_end_height)
+
+                mesh_path = random.choice(mesh_paths)
+                texture_path = random.choice(texture_paths)
+                app.add_model(mesh_path, texture_path, pos=pos_ahead)
+                output_window.signal_add_model = False
+
+            # delete model according to keypress
+            if output_window.signal_del_model and t % obj_delete_throttle == 0:
+                app.delete_random_model()
+                output_window.signal_del_model = False
+
             # update yaw
             if output_window.is_pressed['yaw-left']:
                 app.cam.setH(app.cam.getH() + rot_step)
