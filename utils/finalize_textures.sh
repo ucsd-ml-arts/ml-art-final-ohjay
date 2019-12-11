@@ -12,12 +12,17 @@ done
 
 # combine into one folder (synthesized_textures)
 cd ..
+idx=0
 for fpath in subjective_textures/*/I0010_F0000.png; do
-    mv $fpath synthesized_textures
+    fname=$(basename "$fpath")
+    mv $fpath "synthesized_textures/I0010_F0000_${idx}.png"
+    (( idx++ ))
 done
 for subdir in subjective_textures/*/; do
     for fpath in `ls $subdir*.png | sort -rV`; do
-        mv $fpath synthesized_textures
+        fname=$(basename "$fpath")
+        mv $fpath "synthesized_textures/${fname%.png}_${idx}.png"
+        (( idx++ ))
         break
     done
 done
