@@ -150,6 +150,11 @@ cd mesh-parameterization/build
 ./add-texcoords <in.obj> <out.obj>
 ```
 
+You can alternatively use Blender for UV mapping. (You will need to install [Blender](https://www.blender.org/download). This script is meant for 2.79.)
+```
+blender --background --python utils/uvmap_meshes.py -- in.obj out.obj
+```
+
 ### [3] Mesh stylization
 
 Download training data (public-domain Met art).
@@ -318,7 +323,7 @@ If you're running this on macOS, you should invoke `python3 renderloop.py` with 
   - [`libigl` tutorial](https://libigl.github.io)
   - [The Met Collection](https://www.metmuseum.org/art/collection)
   - [RESISC45 dataset](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html)
-  - [Alice Gallery](Alice Gallery)
+  - [Alice Gallery](http://alice.org/pandagallery)
     - [Chicken (direct link)](http://alice.org/pandagallery/Animals/Chicken2.zip)
     - [Bedroom (direct link)](http://alice.org/pandagallery/Environments/bedroom.zip)
   - [Sky image](https://www.pexels.com/photo/clouds-heaven-outdoors-space-479821) (from [`icon0.com`](https://www.pexels.com/@freeimages9) on [Pexels](https://www.pexels.com/photo-license/))
