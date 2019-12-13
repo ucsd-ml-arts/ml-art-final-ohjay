@@ -4,7 +4,7 @@ Owen Jow, owen@eng.ucsd.edu
 
 ## Abstract Proposal
 
-Here I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (though without using 2D image stylization as in the previous project). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). Basically, I coerce some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
+I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to compose a stylized 3D scene (though without using 2D image stylization as in the previous project). Given the infinite onslaught of synthesized objects, I envision the scene growing into a mini metropolis, and intend for it to represent "inexorable" temporal processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). Basically, I get some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
 
 ## Project Report
 
@@ -18,77 +18,78 @@ You can find my project report [here](report/report.pdf).
 - **[4] Scene layout design.** I use ML to determine the placement of objects in the scene.
 
 ### Non-ML-Based
-- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes, and UV map the meshes according to a cut-based parameterization method.
-- **[5] Real-time scene construction.** I build up the scene using the stylized/generated objects in an animated fashion.
+- **[2] Voxel/mesh conversion.** I convert the voxel objects to meshes using marching cubes, and UV map the meshes according to a cut-based parameterization method (or via Blender's [Smart UV Project](https://docs.blender.org/manual/en/latest/modeling/meshes/editing/uv/unwrapping/mapping_types.html#smart-uv-project), which is also cut-based).
+- **[5] Real-time scene construction.** I build up the scene with the generated objects in an animated fashion.
 - **[6] Offline scene construction.** I also provide an option to write out the scene construction as a video.
 
 ## Extended Descriptions
 
 ### [1] Voxel object generation
 
-- I generate objects for three classes of objects (chair, desk, and sofa).
+- I synthesize objects for three different classes: _chair_, _desk_, and _sofa_. I'm putting these objects in a room, so I think it's appropriate for them to be furniture.
 - Why voxels? They lend well to layout generation, seeing as you can easily describe a set of voxel objects using a 2D top-down grid. Also, voxels look artificial, which contributes to the theme of creation.
 
 ### [2] Voxel/mesh conversion
 
-- I convert voxel objects to `.obj` files in order to reduce the number of meshes that Panda3D has to deal with (on the premise that I don't want to write a voxel engine).
-- Unfortunately, the converted meshes are degenerate, and even a slew of online remeshing/repair software has failed to fix them to the point where many common geometry processing operations (e.g. geodesic distances, harmonic map parameterizations) will actually work properly.
+- I convert the voxel objects to OBJ triangle meshes in order to reduce the amount of individual geometry that Panda3D has to deal with (on the premise that I don't want to write a voxel engine).
+- Unfortunately, the converted meshes tend to be degenerate, and even a slew of online remeshing/repair software hasn't seemed to be able to fix them to the point where a lot of common geometry processing operations (e.g. geodesic distances, harmonic map parameterizations) will actually work properly. This is why I had to use the simple parameterization scheme.
 
 ### [3] Mesh stylization
 
 - I use GAN-based unconditional image generation to generate mesh textures. I choose to use [MSG-GAN](https://github.com/akanimax/BMSG-GAN) for its purported stability and because StyleGAN sounds like it might take longer to train.
-- I also apply a synthesis method on top of this, such that I can generate an unlimited number of textures.
+- I also apply a [synthesis method](https://github.com/in-pursuit-of-beauty/subjective-functions) on top of this, so that I can generate additional textures at different resolutions.
 
 ### [4] Scene layout design
 
-- I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized so that the value at each location can represent the probability that we place an object there. I use these maps in order to sample where to place each new object.
-- The CVAE is trained on satellite imagery. Alternatively, it could be trained on any grayscale image data. For example, if it were trained on MNIST, then the scenes would build up like 3D numbers.
+- I train a generator as part of a convolutional VAE (CVAE) to create top-down layout sampling maps. These maps are grayscale and [0, 1]-normalized such that the value at each location represents the probability that we place an object there. Accordingly, I use these maps in order to sample where to place each object.
+- The CVAE is trained on [satellite imagery](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html). Alternatively, it could be trained on any grayscale image data. For example, if it were trained on MNIST, then the scenes would build up like extruded 3D numbers.
 - The network is not trained for high-fidelity reconstruction. I do not regard this as important since (a) the maps are just used for sampling and (b) the use case is primarily artistic, not reconstructive. It's the thought that counts. :)
 
 ### [5] Real-time scene construction
 
-- I allow users to add objects to the 3D scene.
-- I allow users to delete objects, but this functionality is essentially ineffectual, since the rate of growth is faster than the maximum rate of deletion.
+- I allow users to add objects to the 3D scene in front of the current camera.
+- I also allow users to delete objects, but this functionality is essentially and intentionally ineffectual, since the rate of growth is faster than the maximum rate of deletion.
 - Users can orbit or walk around the scene as it grows.
 - I drop the objects from the sky as if they're coming from "the creator." An object will fall until it approximately hits the ground, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
 
 ### [6] Offline scene construction
 
-- In this mode, the program will automatically compute and save an animation depicting the layer-by-layer construction of the scene.
+- In this mode, the program will save an animation depicting the layer-by-layer construction of the scene.
 - As part of the animation, I add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
-- The scene begins as a simple room with only a window and a fireplace, but then the ML-made objects take over.
+- The scene begins as an empty room with only a window and a fireplace, but then the ML-made objects take over.
 
 ## Model/Data
 
 - You can download a pre-trained 3D-GAN model according to the instructions in [the repo](https://github.com/in-pursuit-of-beauty/3dgan-release).
 - You can download a pre-trained MSG-GAN model from [this link](https://drive.google.com/file/d/1RdPUz6n2C7L6r3CMyOJicKH-URgSK6tN/view?usp=sharing).
-  - This is the model which is used for generating artistic mesh textures. It was trained for 730 epochs on a dataset of Van Gogh paintings. I think it could stand to be trained for more.
-  - Note that you can download and preprocess these Van Gogh paintings by following the instructions in the [stylization usage section](#3-mesh-stylization-1). They come from [The Met Collection](https://www.metmuseum.org/art/collection).
+  - This is the model which is used for generating artistic mesh textures. I trained it for 730 epochs on a dataset of Van Gogh paintings. I think it could stand to be trained for more.
+  - Note that you can download and preprocess these Van Gogh paintings by following the instructions in the [stylization usage section](#3-mesh-stylization-1). The paintings come from [The Met Collection](https://www.metmuseum.org/art/collection).
 - You can download a pre-trained scene layout model from [this link](https://drive.google.com/file/d/1pyV63pkylTzR6jEAr1kLNkQWZVggw2xF/view?usp=sharing).
-  - This is the convolutional VAE model which is used to generate layout sampling maps. It was trained for 5000 epochs on 700 images from the RESISC45 satellite imagery dataset.
+  - This is the convolutional VAE model which is used to generate layout sampling maps. I trained it for 5000 epochs on 700 images from the RESISC45 satellite imagery dataset.
   - Speaking of which, you can download the RESISC45 dataset from [this link](http://www.escience.cn/people/JunweiHan/NWPU-RESISC45.html).
 
 ## Code
 
 - `renderloop.py`: The main file. Launches the rendering loop.
 - `prepare_assets.sh`: Generates meshes, textures, and layouts in one fell swoop.
-- `utils/vox2mesh.py`: Convert voxel grids to meshes and export as OBJs.
-- `utils/preprocess_art.py`: Code for preprocessing/augmenting the art dataset.
-- `utils/convert_all.sh`: Does postprocessing for all generated voxel objects.
+- `utils/vox2mesh.py`: Converts voxel grids to meshes and exports the meshes as OBJs.
+- `utils/preprocess_art.py`: Preprocesses and augments the art dataset.
+- `utils/convert_all.sh`: Postprocesses all generated voxel objects.
 - `utils/finalize_textures.sh`: Synthesizes additional textures.
 - `utils/remove_bad_meshes.sh`: Removes meshes without texture coordinates.
-- `utils/train_msg_gan.sh`: Convenience script for training the MSG-GAN (for use on cluster).
+- `utils/train_msg_gan.sh`: Convenience script for training the MSG-GAN (for use on the cluster).
 - `utils/write_video.py`: Takes a bunch of images and turns them into a video.
-- `utils/uvmap_meshes.py`: Perform UV mapping using Blender's "smart projection."
+- `utils/uvmap_meshes.py`: Performs UV mapping using Blender's "smart projection."
 - `3dgan-release/main.lua`: Generates voxel objects.
-- `3dgan-release/visualization/python/postprocess.py`: Postprocess voxel objects.
-- `BMSG-GAN/sourcecode/train.py`: Train the art texture generator.
-- `mesh-parameterization/src/main.cpp`: Add texture coordinates to OBJs.
-- `mesh-parameterization/src/parameterize_mesh.cpp`: Do mesh parameterization.
-- `The-Metropolitan-Museum-of-Art-Image-Downloader/met_download.py`: Download art data.
+- `3dgan-release/visualization/python/postprocess.py`: Postprocesses voxel objects.
+- `BMSG-GAN/sourcecode/train.py`: Trains the art texture generator.
+- `BMSG-GAN/sourcecode/generate_samples.py`: Generates new art textures.
+- `mesh-parameterization/src/main.cpp`: Adds texture coordinates to OBJs.
+- `mesh-parameterization/src/parameterize_mesh.cpp`: Does mesh parameterization.
+- `The-Metropolitan-Museum-of-Art-Image-Downloader/met_download.py`: Downloads art data.
 - `subjective-functions/synthesize.py`: Performs texture synthesis from input samples.
-- `sdae/train.py`: Train the convolutional VAE for scene layout generation.
-- `sdae/generate_samples.py`: Generate scene layouts using the trained VAE.
+- `sdae/train.py`: Trains the convolutional VAE for scene layout generation.
+- `sdae/generate_samples.py`: Generates scene layouts using the trained VAE.
 
 ## Setup
 
@@ -109,10 +110,16 @@ done
 
 ## Quickstart
 
-Edit the parameters at the beginning of `prepare_assets.sh`.
+### Mesh, texture, layout generation
+First edit the parameters at the beginning of `prepare_assets.sh`. Then run
 ```
-./prepare_assets.sh    # components [1]-[4]
-python3 renderloop.py  # component [5]
+./prepare_assets.sh  # components [1]-[4]
+```
+This will take some time, and you should probably look at the [script](prepare_assets.sh) and run everything individually to make sure nothing fails. If you don't want to generate everything yourself, I have released a [small set of sample assets](TODO) that you can use.
+
+### Main rendering loop
+```
+python3 renderloop.py [--no_autospawn]  # component [5]
 ```
 
 ## Usage
@@ -126,13 +133,13 @@ th main.lua -gpu 1 -class all -bs 50 -sample -ss 150
 
 ### [2] Voxel/mesh conversion
 
-#### All
+#### FOR ALL OBJECTS
 
 ```
 ./utils/convert_all.sh 3dgan-release/output <mesh dir>
 ```
 
-#### Individual
+#### FOR A SINGLE OBJECT
 
 Postprocess the voxel object (binarize and keep only the largest connected component).
 ```
@@ -307,10 +314,9 @@ If you're running this on macOS, you should invoke `python3 renderloop.py` with 
 - Generate higher-resolution voxel objects, e.g. based on [this project](https://github.com/EdwardSmith1884/Multi-View-Silhouette-and-Depth-Decomposition-for-High-Resolution-3D-Object-Representation).
   - _Why didn't I do this?_ Not enough time.
 - More mesh cleanup, e.g. using [PyMesh](https://pymesh.readthedocs.io/en/latest/api_local_mesh_cleanup.html), CGAL, [`libigl`](https://github.com/libigl/libigl-examples/blob/master/skeleton-poser/clean.cpp), etc.
-  - _Why didn't I do this?_ Not enough time, and unnecessary.
-- Have the scene design network compute a new layout based on the current layout.
-  - _Why didn't I do this?_ This would imply that at each step of the construction process, I would need to run the network.
-  I wanted to precompute the sampling maps so that I could safely run the program on a laptop in real-time during the showcase.
+  - _Why didn't I do this?_ Not enough time.
+- Generate a new sampling map for every individual object, conditioned on the existing layout.
+  - _Why didn't I do this?_ This would imply that at each step of the construction process, I would need to perform a forward pass for a network. I wanted to precompute the sampling maps so that I could safely run the program on a laptop in real-time during the showcase.
 
 ## References
 
