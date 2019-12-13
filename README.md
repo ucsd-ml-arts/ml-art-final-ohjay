@@ -2,6 +2,8 @@
 
 Owen Jow, owen@eng.ucsd.edu
 
+![teaser](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/teaser.jpg)
+
 ## Abstract Proposal
 
 I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to compose a stylized 3D scene (though without using 2D image stylization as in the previous project). Given the infinite onslaught of synthesized objects, I envision the scene growing into a mini metropolis, and intend for it to represent "inexorable" temporal processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). Basically, I get some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
@@ -276,13 +278,21 @@ python3 renderloop.py --offline
 
 ## Results
 
-Documentation of your results in an appropriate format, both links to files and a brief description of their contents:
-- What you include here will very much depend on the format of your final project
-  - textures (drive)
-  - meshes (drive)
-  - layouts (drive)
-  - snapshots of scene with everything (imgur)
-  - video of scene (youtube)
+### Synthesized Objects
+![object_examples](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/object_examples.jpg)
+
+### Synthesized Textures
+Original textures:
+![textures_original](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/textures_original.jpg)
+
+Re-synthesized textures:
+![textures_resynth](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/textures_resynth.jpg)
+
+### Synthesized Layouts
+![layout_examples](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/layout_examples.jpg)
+
+### Scene Snapshots
+![scene_snapshots](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/scene_snapshots.jpg)
 
 ## Technical Notes
 
