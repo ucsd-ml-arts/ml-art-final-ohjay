@@ -7,9 +7,15 @@ import numpy as np
 import time
 import cv2
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import loadPrcFileData, Vec3
+from panda3d.core import loadPrcFileData, Vec3, \
+    ConfigVariableFilename, ExecutionEnvironment
 from pynput import keyboard
 from direct.gui.OnscreenImage import OnscreenImage
+
+print('XDG_CACHE_HOME={xch}'.format(
+    xch=ExecutionEnvironment.getEnvironmentVariable('XDG_CACHE_HOME')))
+print('WARNING: models will be cached to {mcd}'.format(
+    mcd=ConfigVariableFilename('model-cache-dir')))
 
 loadPrcFileData('', 'window-type offscreen')
 loadPrcFileData('', 'sync-video 0')

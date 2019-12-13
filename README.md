@@ -6,6 +6,10 @@ Owen Jow, owen@eng.ucsd.edu
 
 Here I revisit the 3D world of my ["generative visual" project](https://github.com/ohjay/in-pursuit-of-beauty), this time endeavoring to generate and place stylized objects in the scene according to an ML system's schizophrenic guidance. In a sentence, I aim to use ML to construct a stylized 3D scene (though without using 2D image stylization as in the previous project). I envision the scene growing into a mini metropolis, and intend for it to represent literally or seemingly inexorable processes such as entropy, virtual information clutter, and the proliferation of humanity's creations. The project involves several components, for which I provide brief descriptions [below](#project-components). Basically, I coerce some ML models to generate meshes, textures, and layouts to use for rendering. I employ models and algorithms such as [Wu, Zhang et al.'s 3D-GAN](http://3dgan.csail.mit.edu/), [Karnewar et al.'s MSG-GAN](https://arxiv.org/abs/1903.06048) (similar to StyleGAN which was covered in class), convolutional denoising VAEs, marching cubes, mesh parameterization, and simple rasterization-based rendering. During the showcase, I will bring an interactive laptop demo in which users can walk around the scene as it is being constructed.
 
+## Project Report
+
+You can find my project report [here](report/report.pdf).
+
 ## Project Components
 
 ### ML-Based
@@ -54,10 +58,6 @@ Here I revisit the 3D world of my ["generative visual" project](https://github.c
 - As part of the animation, I add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
 - The scene begins as a natural environment with free-roaming pandas, but then the ML-made objects take over.
 
-## Project Report
-
-You can find my project report [here](report/report.pdf).
-
 ## Model/Data
 
 - You can download a pre-trained 3D-GAN model according to the instructions in [the repo](https://github.com/in-pursuit-of-beauty/3dgan-release).
@@ -79,6 +79,7 @@ You can find my project report [here](report/report.pdf).
 - `utils/remove_bad_meshes.sh`: Removes meshes without texture coordinates.
 - `utils/train_msg_gan.sh`: Convenience script for training the MSG-GAN (for use on cluster).
 - `utils/write_video.py`: Takes a bunch of images and turns them into a video.
+- `utils/uvmap_meshes.py`: Perform UV mapping using Blender's "smart projection."
 - `3dgan-release/main.lua`: Generates voxel objects.
 - `3dgan-release/visualization/python/postprocess.py`: Postprocess voxel objects.
 - `BMSG-GAN/sourcecode/train.py`: Train the art texture generator.
@@ -144,15 +145,25 @@ Perform the voxel-to-mesh conversion. The result will be written to an OBJ file.
 python3 utils/vox2mesh.py <postprocessed mat path>
 ```
 
-Assign texture coordinates based on a mesh parameterization.
+Assign texture coordinates. You have two options here. The first is to use the naive algorithm that I implemented:
 ```
 cd mesh-parameterization/build
 ./add-texcoords <in.obj> <out.obj>
 ```
 
-You can alternatively use Blender for UV mapping. (You will need to install [Blender](https://www.blender.org/download). This script is meant for 2.79.)
+The other option is to use Blender. (You will need to install [Blender](https://www.blender.org/download). This script is meant for v2.79.)
 ```
-blender --background --python utils/uvmap_meshes.py -- in.obj out.obj
+blender --background --python utils/uvmap_meshes.py -- <in.obj> <out.obj>
+```
+
+There is a tradeoff. I think my parameterization often yields more aesthetically-pleasing texturizations, but it also retains only the largest connected component in the OBJ file, meaning it creates ugly holes in the mesh. By contrast, Blender's UV-mapping algorithm is almost certainly more robust and will preserve the full shape of the object. Note that the [`utils/convert_all.sh`](utils/convert_all.sh) script uses Blender's mapping by default. Here is a visual comparison of the two methods applied to the same mesh and texture (my output is on the left, and Blender's output is on the right):
+
+![uv_comparison](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/uv_comparison.jpg)
+
+If you use Blender, I recommend you first convert your mesh into a watertight manifold:
+```
+cd Manifold/build
+./manifold <in.obj> <out.obj>
 ```
 
 ### [3] Mesh stylization

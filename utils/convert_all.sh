@@ -25,9 +25,7 @@ for mat_path in $VOXEL_DIR/*sample.mat; do
         ./manifold $out_mesh_path $out_mesh_path
         cd -
         # Assign texture coordinates.
-        cd mesh-parameterization/build
-        ./add-texcoords $out_mesh_path $out_mesh_path
-        cd -
+        blender --background --python utils/uvmap_meshes.py -- $out_mesh_path $out_mesh_path
         echo "Finished converting ${out_mesh_path}."
     done
 done

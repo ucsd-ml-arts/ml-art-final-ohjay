@@ -41,11 +41,7 @@ class ExportOBJ(bpy.types.Operator):
                 scene.objects.active = obj
                 bpy.ops.object.editmode_toggle()
                 bpy.ops.mesh.select_all(action='SELECT')
-                bpy.ops.uv.unwrap()
-
-        # for mesh in [obj.data for obj in bpy.context.scene.objects if obj.type == 'MESH']:
-        #     print(mesh)
-        #     mesh.uv_textures.new('uv')
+                bpy.ops.uv.smart_project()
 
         bpy.ops.export_scene.obj(filepath=self.out_filepath)
         print('Exported OBJ to %s.\n\n' % self.out_filepath)
