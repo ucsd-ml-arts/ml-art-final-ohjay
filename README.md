@@ -52,7 +52,7 @@ You can find my project report [here](report/report.pdf).
 - I allow users to add objects to the 3D scene in front of the current camera.
 - I also allow users to delete objects, but this functionality is essentially and intentionally ineffectual, since the rate of growth is faster than the maximum rate of deletion.
 - Users can orbit or walk around the scene as it grows.
-- I drop the objects from the sky as if they're coming from "the creator." An object will fall until it approximately hits the ground, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
+- I drop the objects from the sky as if they're coming from "the creator." An object will fall until it approximately hits the ground, and in this way the scene is slowly built up. This process can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
 
 ### [6] Offline scene construction
 

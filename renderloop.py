@@ -347,6 +347,7 @@ if __name__ == '__main__':
                 mesh_path = random.choice(mesh_paths)
                 texture_path = random.choice(texture_paths)
                 app.add_model(mesh_path, texture_path)
+                num_objs_added += 1
                 # update add delay s.t. next object arrives sooner
                 obj_add_delay -= init_add_delay / num_objs_to_add
                 prev_add_time = curr_time
@@ -451,7 +452,7 @@ if __name__ == '__main__':
             image = app.get_camera_image()
             image = image[:, :, ::-1]  # RGB -> BGR
 
-        if int(app.cam.getH()) == offline_key_yaw:
+        if offline and (int(app.cam.getH()) == offline_key_yaw):
             if past_keyframe is not None:
                 # write 10 images of the past cycle's view at this angle
                 for i in range(10):
