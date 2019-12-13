@@ -297,7 +297,7 @@ if __name__ == '__main__':
     app = BeautyApp(layout, background_path)
     window_name = 'Inexorable'
     if offline:
-        frames = 1800
+        frames = 300
         output_window = None
     else:
         frames = 99999
@@ -329,8 +329,8 @@ if __name__ == '__main__':
     for t in range(frames):
         update = (t == 0)
 
-        curr_time = t / fps if offline else time.time()
-        update = update or app.update_falling_models(curr_time - prev_time)
+        curr_time = float(t) / fps if offline else time.time()
+        update = app.update_falling_models(curr_time - prev_time) or update
 
         if not no_autospawn and num_objs_added < num_objs_to_add:
             if curr_time - prev_add_time >= obj_add_delay:

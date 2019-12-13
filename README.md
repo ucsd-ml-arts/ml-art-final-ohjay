@@ -247,16 +247,18 @@ python3 generate_samples.py --model_class CVAE \
 
 Set paths in the [config file](config.yaml), then run
 ```
-python3 renderloop.py
+python3 renderloop.py [--no_autospawn]
 ```
 
 - You can change the camera position with the arrow keys.
 - You can change the camera yaw with the A and D keys.
 - You can change the camera pitch with the W and S keys.
-- You can use the F key to add an object.
+- You can use the F key to add an object in front of the camera.
 - You can use the U key to delete an object (sometimes).
 - You can quit the program using Q or ESC.
 - You can save a snapshot by hitting the spacebar.
+
+If you pass the `--no_autospawn` flag, then objects will not be automatically added, and you can use the application in somewhat of an "interior design" sense (by adding the objects yourself).
 
 ### [6] Offline scene construction
 
