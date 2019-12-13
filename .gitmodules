@@ -21,4 +21,4 @@
 	url = https://github.com/in-pursuit-of-beauty/sdae.git
 [submodule "Manifold"]
 	path = Manifold
-	url = https://github.com/hjwdzh/Manifold.git
+	url = https://github.com/in-pursuit-of-beauty/Manifold.git
