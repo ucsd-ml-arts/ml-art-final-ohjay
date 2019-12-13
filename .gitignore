@@ -2,3 +2,5 @@ processed_objs/
 synthesized_textures/
 generated_layouts/
 subjective_textures/
+out/
+*.pyc

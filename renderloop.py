@@ -279,6 +279,7 @@ if __name__ == '__main__':
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
         print('Created output directory at `%s`.' % out_dir)
+        # note: for offline animations, you should make sure the output directory is empty
 
     mesh_paths = get_files_with_extension(mesh_dir, '.obj')
     texture_paths = get_files_with_extension(texture_dir, ('.jpg', '.png'))
@@ -290,6 +291,11 @@ if __name__ == '__main__':
     layout = imageio.imread(layout_path, as_gray=True)
     # turn layout into PDF for sampling
     layout = np.squeeze(layout)
+    if offline:
+        # keep objects away from the center, where the camera is
+        lh, lw = layout.shape
+        layout[lh//2-lh//6:lh//2+lh//6, lw//2-lw//6:lw//2+lw//6] = 0
+    assert np.sum(layout) > 0
     layout /= np.sum(layout)  # normalize to [0, 1], sum to 1
     assert np.isclose(np.sum(layout), 1), \
         'probabilities sum to %f instead of 1' % np.sum(layout)
@@ -311,12 +317,13 @@ if __name__ == '__main__':
     rot_step = 0.8
     start_time = time.time()
     if offline:
-        obj_add_delay = (frames / fps) / num_objs_to_add
+        obj_add_delay = 5.0 / fps  # five frames in
         prev_add_time = 0  # time of prev object drop
+        init_add_delay = obj_add_delay * 3
     else:
         obj_add_delay = 2  # of seconds until next object drop
         prev_add_time = start_time  # time of prev object drop
-    init_add_delay = obj_add_delay
+        init_add_delay = obj_add_delay
 
     # initial cam extrinsics
     cam_height = 22
@@ -344,7 +351,7 @@ if __name__ == '__main__':
                 update = True
 
         if image is not None and (offline or output_window.take_snapshot):
-            snapshot_path = 'frame%d.png' % (t - 1)
+            snapshot_path = 'frame%s.png' % str(t - 1).zfill(6)
             snapshot_path = os.path.join(out_dir, snapshot_path)
             imageio.imwrite(snapshot_path, app.get_camera_image())
             print('Wrote `%s`.' % snapshot_path)
