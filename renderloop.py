@@ -275,6 +275,7 @@ if __name__ == '__main__':
     mesh_dir = config['mesh_dir']
     texture_dir = config['texture_dir']
     layout_dir = config['layout_dir']
+    offline_key_yaw = 50
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -294,7 +295,7 @@ if __name__ == '__main__':
     if offline:
         # keep objects away from the center, where the camera is
         lh, lw = layout.shape
-        layout[lh//2-lh//6:lh//2+lh//6, lw//2-lw//6:lw//2+lw//6] = 0
+        layout[lh//2-lh//5:lh//2+lh//5, lw//2-lw//5:lw//2+lw//5] = 0
     assert np.sum(layout) > 0
     layout /= np.sum(layout)  # normalize to [0, 1], sum to 1
     assert np.isclose(np.sum(layout), 1), \
@@ -303,14 +304,14 @@ if __name__ == '__main__':
     app = BeautyApp(layout, background_path)
     window_name = 'Inexorable'
     if offline:
-        frames = 300
+        frames = 360
         output_window = None
     else:
         frames = 99999
         output_window = OutputWindow(window_name)
 
     num_objs_added = 0
-    num_objs_to_add = 100
+    num_objs_to_add = 50
     obj_delete_throttle = 60
 
     pos_step = 0.7
@@ -332,6 +333,7 @@ if __name__ == '__main__':
     app.graphicsEngine.renderFrame()  # for background
 
     image = None
+    past_keyframe = None
     prev_time = 0 if offline else time.time()
     for t in range(frames):
         update = (t == 0)
@@ -360,7 +362,7 @@ if __name__ == '__main__':
 
         if offline:
             # spin around and look at scene as it builds up
-            app.cam.setH(app.cam.getH() + rot_step)
+            app.cam.setH((app.cam.getH() + 2) % 360)
             update = True
         else:
             # add model according to keypress
@@ -448,6 +450,16 @@ if __name__ == '__main__':
             app.graphicsEngine.renderFrame()
             image = app.get_camera_image()
             image = image[:, :, ::-1]  # RGB -> BGR
+
+        if int(app.cam.getH()) == offline_key_yaw:
+            if past_keyframe is not None:
+                # write 10 images of the past cycle's view at this angle
+                for i in range(10):
+                    snapshot_path = 'frame%s_%d.png' % (str(t - 1).zfill(6), i)
+                    snapshot_path = os.path.join(out_dir, snapshot_path)
+                    imageio.imwrite(snapshot_path, past_keyframe)
+                    print('Wrote `%s`.' % snapshot_path)
+            past_keyframe = app.get_camera_image()
 
         # show
         if not offline:
