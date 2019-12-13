@@ -278,17 +278,17 @@ python3 renderloop.py --offline
 
 ## Results
 
-### Synthesized Objects
+### Synthesized Object Examples
 ![object_examples](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/object_examples.jpg)
 
-### Synthesized Textures
-Original textures:
+### Synthesized Texture Examples
+#### MSG-GAN OUTPUT
 ![textures_original](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/textures_original.jpg)
 
-Re-synthesized textures:
+#### [SNELGROVE](http://wxs.ca/research/multiscale-neural-synthesis/Snelgrove-multiscale-texture-synthesis.pdf) OUTPUT
 ![textures_resynth](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/textures_resynth.jpg)
 
-### Synthesized Layouts
+### Synthesized Layout Examples
 ![layout_examples](https://raw.githubusercontent.com/ohjay/inexorable/master/assets/layout_examples.jpg)
 
 ### Scene Snapshots
