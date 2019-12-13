@@ -50,13 +50,13 @@ You can find my project report [here](report/report.pdf).
 - I allow users to add objects to the 3D scene.
 - I allow users to delete objects, but this functionality is essentially ineffectual, since the rate of growth is faster than the maximum rate of deletion.
 - Users can orbit or walk around the scene as it grows.
-- I drop the objects from the sky as if they're coming from "the creator." An object will fall until it hits either the ground or an existing object, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
+- I drop the objects from the sky as if they're coming from "the creator." An object will fall until it approximately hits the ground, and in this way the scene is slowly built up. This stacking algorithm can create amalgamations of objects, which might contribute to a sense of ML "creativity" (e.g. sofa + sofa = ?).
 
 ### [6] Offline scene construction
 
 - In this mode, the program will automatically compute and save an animation depicting the layer-by-layer construction of the scene.
 - As part of the animation, I add brief flashes of simplicity (i.e. records of the past) in the ever-growing clutter.
-- The scene begins as a natural environment with free-roaming pandas, but then the ML-made objects take over.
+- The scene begins as a simple room with only a window and a fireplace, but then the ML-made objects take over.
 
 ## Model/Data
 
