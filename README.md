@@ -117,7 +117,7 @@ First edit the parameters at the beginning of `prepare_assets.sh`. Then run
 ```
 ./prepare_assets.sh  # components [1]-[4]
 ```
-This will take some time, and you should probably look at the [script](prepare_assets.sh) and run everything individually to make sure nothing fails. If you don't want to generate everything yourself, I have released a [small set of sample assets](TODO) that you can use.
+This will take some time, and you should probably look at the [script](prepare_assets.sh) and run everything individually to make sure nothing fails. If you don't want to generate everything yourself, I have released a [small set of sample assets](https://drive.google.com/file/d/1C2zt4-8Mcab4INal-AiAU5UenObOW-Dl/view?usp=sharing) that you can use.
 
 ### Main rendering loop
 ```
