@@ -10,7 +10,7 @@ I revisit the 3D world of my ["generative visual" project](https://github.com/oh
 
 ## Project Report
 
-You can find my project report [here](report/report.pdf).
+You can find my project report [here](https://owenjow.xyz/inexorable/report.pdf).
 
 ## Project Components
 
